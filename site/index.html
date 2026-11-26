@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oakwood Commons — Open-Source Developer Tools</title>
-  <meta name="description" content="Open-source developer tools focused on configuration management, scaffolding, terminal workflows, and automation.">
+  <meta name="description" content="Open-source developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries by Oakwood Commons.">
   <link rel="canonical" href="https://oakwood-commons.org/">
   <style>
     :root {
@@ -16,7 +16,9 @@
       --muted: #8b949e;
       --accent: #58a6ff;
       --accent-subtle: rgba(56, 139, 253, 0.14);
-      --tag-bg: #21262d;
+      --docs-badge-bg: rgba(63, 185, 80, 0.14);
+      --docs-badge-fg: #3fb950;
+      --code-bg: #090c10;
     }
     @media (prefers-color-scheme: light) {
       :root {
@@ -28,7 +30,9 @@
         --muted: #59636e;
         --accent: #0969da;
         --accent-subtle: rgba(9, 105, 218, 0.1);
-        --tag-bg: #eaeef2;
+        --docs-badge-bg: rgba(26, 127, 55, 0.1);
+        --docs-badge-fg: #1a7f37;
+        --code-bg: #eff2f5;
       }
     }
     * { box-sizing: border-box; }
@@ -37,13 +41,13 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
     }
     .wrap {
-      max-width: 960px;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 3.5rem 1.5rem 4rem;
+      padding: 3rem 1.5rem 4rem;
     }
     header {
       display: flex;
@@ -51,7 +55,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      padding-bottom: 2.5rem;
+      padding-bottom: 2rem;
       border-bottom: 1px solid var(--border);
     }
     .brand {
@@ -67,7 +71,7 @@
     }
     .brand h1 {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       letter-spacing: -0.02em;
     }
     .gh-btn {
@@ -89,23 +93,23 @@
       border-color: var(--accent);
     }
     .hero {
-      padding: 2.75rem 0 2rem;
+      padding: 2.4rem 0 1.8rem;
     }
     .hero h2 {
-      margin: 0 0 0.75rem;
-      font-size: clamp(1.75rem, 3.5vw, 2.4rem);
-      line-height: 1.25;
+      margin: 0 0 0.65rem;
+      font-size: clamp(1.7rem, 3.3vw, 2.35rem);
+      line-height: 1.22;
       letter-spacing: -0.025em;
     }
     .hero p {
       margin: 0;
-      max-width: 680px;
+      max-width: 700px;
       color: var(--muted);
-      font-size: 1.1rem;
+      font-size: 1.08rem;
     }
     .section-label {
-      margin: 2rem 0 1rem;
-      font-size: 0.8rem;
+      margin: 1.5rem 0 0.9rem;
+      font-size: 0.78rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -113,14 +117,17 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1rem;
+    }
+    .compact-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
     .card {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 1.35rem;
+      padding: 1.25rem;
       border-radius: 12px;
       border: 1px solid var(--border);
       background: var(--surface);
@@ -132,38 +139,62 @@
     }
     .card-top h3 {
       margin: 0 0 0.4rem;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
     }
+    .featured-card .card-top h3 {
+      font-size: 1.18rem;
+    }
     .card-top h3 a {
       color: var(--text);
       text-decoration: none;
+      word-break: break-word;
     }
     .card-top h3 a:hover {
       color: var(--accent);
     }
+    .prefix {
+      color: var(--muted);
+      font-weight: 400;
+    }
     .badge {
       font-size: 0.72rem;
       font-weight: 600;
-      padding: 0.15rem 0.5rem;
+      padding: 0.15rem 0.55rem;
       border-radius: 999px;
       background: var(--accent-subtle);
       color: var(--accent);
       white-space: nowrap;
     }
+    .badge-docs {
+      background: var(--docs-badge-bg);
+      color: var(--docs-badge-fg);
+    }
     .card p {
-      margin: 0.4rem 0 1.1rem;
-      font-size: 0.94rem;
+      margin: 0.35rem 0 0.95rem;
+      font-size: 0.9rem;
       color: var(--muted);
+    }
+    .install-cmd {
+      display: block;
+      margin: 0 0 1rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      color: var(--text);
+      overflow-x: auto;
     }
     .links {
       display: flex;
       flex-wrap: wrap;
       gap: 0.9rem;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 500;
     }
     .links a {
@@ -173,6 +204,105 @@
     .links a:hover {
       text-decoration: underline;
     }
+    .directory-bar {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .directory-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .directory-top h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: -0.015em;
+    }
+    .search-input {
+      min-width: 260px;
+      flex: 0 1 320px;
+      padding: 0.55rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pill:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+    .pill.active {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .pill .count, .group-count {
+      font-size: 0.74rem;
+      padding: 0.05rem 0.42rem;
+      border-radius: 999px;
+      background: var(--border);
+      color: var(--text);
+    }
+    .repo-group {
+      margin-top: 2.25rem;
+    }
+    .group-header {
+      margin-bottom: 0.9rem;
+    }
+    .group-header h3 {
+      margin: 0 0 0.2rem;
+      font-size: 1.12rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .group-header p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .empty-state {
+      display: none;
+      margin: 2rem 0;
+      padding: 2rem;
+      text-align: center;
+      border-radius: 12px;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+    }
+    .hidden {
+      display: none !important;
+    }
     footer {
       margin-top: 3.5rem;
       padding-top: 1.5rem;
@@ -181,7 +311,7 @@
       flex-wrap: wrap;
       justify-content: space-between;
       gap: 0.75rem;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       color: var(--muted);
     }
     footer a {
@@ -207,101 +337,565 @@
 
     <section class="hero">
       <h2>Developer tools for configuration, scaffolding, and terminal workflows.</h2>
-      <p>Open-source Go CLIs, libraries, and reusable automation templates built for composable, reproducible engineering workflows.</p>
+      <p>Open-source Go CLIs, CEL-powered solutions, pluggable providers, and libraries built for composable engineering workflows.</p>
     </section>
 
-    <div class="section-label">Documentation &amp; Flagship Projects</div>
+    <div class="section-label">Flagship Projects &amp; Documentation</div>
     <div class="grid">
-      <article class="card">
+      
+      <article class="card featured-card">
         <div class="card-top">
           <h3>
             <a href="https://scafctl.oakwood-commons.org/">scafctl</a>
-            <span class="badge">CLI &amp; Docs</span>
+            <span class="badge">Flagship CLI</span>
           </h3>
-          <p>Configuration discovery and scaffolding tool powered by CEL for dynamic evaluation, pluggable providers, and OCI catalog distribution.</p>
+          <p>A configuration discovery and scaffolding tool using CEL for dynamic evaluation</p>
+          <code class="install-cmd">brew install oakwood-commons/tap/scafctl</code>
         </div>
         <div class="links">
-          <a href="https://scafctl.oakwood-commons.org/">Documentation &rarr;</a>
-          <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
+          <a href="https://scafctl.oakwood-commons.org/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
         </div>
       </article>
-
-      <article class="card">
+      <article class="card featured-card">
         <div class="card-top">
           <h3>
             <a href="https://kvx.oakwood-commons.org/">kvx</a>
-            <span class="badge">TUI &amp; Docs</span>
+            <span class="badge">Flagship TUI</span>
           </h3>
-          <p>Interactive terminal UI for exploring, querying, and navigating structured configuration and data files.</p>
+          <p>A terminal-based UI for exploring structured data interactively</p>
+          <code class="install-cmd">brew install oakwood-commons/tap/kvx</code>
         </div>
         <div class="links">
-          <a href="https://kvx.oakwood-commons.org/">Documentation &rarr;</a>
-          <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
+          <a href="https://kvx.oakwood-commons.org/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
         </div>
       </article>
-
-      <article class="card">
+      <article class="card featured-card">
         <div class="card-top">
           <h3>
             <a href="https://oakwood-commons.org/sln-agentic-code/">sln-agentic-code</a>
-            <span class="badge">Solution &amp; Guide</span>
+            <span class="badge">Solution &amp; Blueprint</span>
           </h3>
-          <p>Official scafctl solution, blueprint walkthrough, repository contracts, and portable Go CI for disciplined agentic coding.</p>
+          <p>Official scafctl solution, Blueprint walkthrough, repo contracts, and portable Go CI for disciplined agentic coding</p>
+          
         </div>
         <div class="links">
-          <a href="https://oakwood-commons.org/sln-agentic-code/">Documentation &rarr;</a>
-          <a href="https://github.com/oakwood-commons/sln-agentic-code">GitHub</a>
+          <a href="https://oakwood-commons.org/sln-agentic-code/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/sln-agentic-code">GitHub</a>
         </div>
       </article>
     </div>
 
-    <div class="section-label">Libraries &amp; Companion Tools</div>
-    <div class="grid">
-      <article class="card">
-        <div class="card-top">
-          <h3>
-            <a href="https://github.com/oakwood-commons/cobra-explorer">cobra-explorer</a>
-            <span class="badge">Go TUI</span>
-          </h3>
-          <p>Interactive terminal UI for any Cobra-based CLI — browse command trees, inspect flags, and build commands visually.</p>
-        </div>
-        <div class="links">
-          <a href="https://github.com/oakwood-commons/cobra-explorer">GitHub &rarr;</a>
-        </div>
-      </article>
+    <div class="directory-bar">
+      <div class="directory-top">
+        <h2>Repository Directory</h2>
+        <input id="repo-search" class="search-input" type="search" placeholder="Filter plugins, solutions, libraries..." aria-label="Filter repositories">
+      </div>
+      <div class="pills" role="tablist" aria-label="Repository categories">
+        <button class="pill active" data-filter="all" type="button">All <span class="count">33</span></button><button class="pill" data-filter="cli" type="button">CLIs, TUIs &amp; Apps <span class="count">6</span></button><button class="pill" data-filter="solutions" type="button">Solutions &amp; Templates <span class="count">2</span></button><button class="pill" data-filter="providers" type="button">scafctl Provider Plugins <span class="count">15</span></button><button class="pill" data-filter="auth" type="button">scafctl Auth Plugins <span class="count">4</span></button><button class="pill" data-filter="libraries" type="button">Go Libraries &amp; SDKs <span class="count">6</span></button>
+      </div>
+    </div>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>
-            <a href="https://github.com/oakwood-commons/celexp">celexp</a>
-            <span class="badge">Go Library</span>
-          </h3>
-          <p>Go package for compiling and evaluating Common Expression Language (CEL) expressions with optional caching.</p>
+    
+    <section class="repo-group" data-group-section="cli">
+      <div class="group-header">
+        <div>
+          <h3>CLIs, TUIs &amp; Apps <span class="group-count">6</span></h3>
+          <p>Standalone command-line tools, interactive terminal interfaces, and automation engines.</p>
         </div>
-        <div class="links">
-          <a href="https://github.com/oakwood-commons/celexp">GitHub &rarr;</a>
+      </div>
+      <div class="grid compact-grid">
+        
+        <article class="card repo-card" data-group="cli" data-search="scafctl a configuration discovery and scaffolding tool using cel for dynamic evaluation cel cli configuration devtools go oci scaffolding template-engine clis, tuis &amp; apps">
+          <div class="card-top">
+            <h3>
+              <a href="https://scafctl.oakwood-commons.org/">scafctl</a>
+              <span class="badge badge-docs">Docs</span>
+            </h3>
+            <p>A configuration discovery and scaffolding tool using CEL for dynamic evaluation</p>
+          </div>
+          <div class="links">
+            <a href="https://scafctl.oakwood-commons.org/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="cli" data-search="kvx a terminal-based ui for exploring structured data interactively cel cli csv data-viewer go json ndjson terminal toml tui yaml clis, tuis &amp; apps">
+          <div class="card-top">
+            <h3>
+              <a href="https://kvx.oakwood-commons.org/">kvx</a>
+              <span class="badge badge-docs">Docs</span>
+            </h3>
+            <p>A terminal-based UI for exploring structured data interactively</p>
+          </div>
+          <div class="links">
+            <a href="https://kvx.oakwood-commons.org/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="cli" data-search="cobra-explorer an interactive tui for any cobra-based cli application. browse the full command tree, inspect flags and documentation, build commands visually, and execute them — all without memorizing help output.  clis, tuis &amp; apps">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/cobra-explorer">cobra-explorer</a>
+              
+            </h3>
+            <p>An interactive TUI for any Cobra-based CLI application. Browse the full command tree, inspect flags and documentation, build commands visually, and execute them — all without memorizing help output.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/cobra-explorer">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="cli" data-search="event-reactor event-driven automation engine using cel expressions to match events and dispatch reactions.  clis, tuis &amp; apps">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/event-reactor">event-reactor</a>
+              
+            </h3>
+            <p>Event-driven automation engine using CEL expressions to match events and dispatch reactions.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/event-reactor">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="cli" data-search="spiral-guard agent workflow guard that detects and interrupts repetitive failure spirals.  clis, tuis &amp; apps">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/spiral-guard">spiral-guard</a>
+              
+            </h3>
+            <p>Agent workflow guard that detects and interrupts repetitive failure spirals.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/spiral-guard">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="cli" data-search="homebrew-tap homebrew tap for oakwood-commons projects  clis, tuis &amp; apps">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/homebrew-tap">homebrew-tap</a>
+              
+            </h3>
+            <p>Homebrew tap for oakwood-commons projects</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/homebrew-tap">GitHub</a>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="repo-group" data-group-section="solutions">
+      <div class="group-header">
+        <div>
+          <h3>Solutions &amp; Templates <span class="group-count">2</span></h3>
+          <p>Reusable scafctl solutions, blueprints, and project scaffolding templates.</p>
         </div>
-      </article>
+      </div>
+      <div class="grid compact-grid">
+        
+        <article class="card repo-card" data-group="solutions" data-search="scafctl-solution-plugin-template scaffolds a complete scafctl plugin repository with sdk wiring, tests, and release ci.  solutions &amp; templates">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-solution-plugin-template">scafctl-solution-plugin-template</a>
+              
+            </h3>
+            <p>Scaffolds a complete scafctl plugin repository with SDK wiring, tests, and release CI.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-solution-plugin-template">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="solutions" data-search="sln-agentic-code official scafctl solution, blueprint walkthrough, repo contracts, and portable go ci for disciplined agentic coding  solutions &amp; templates">
+          <div class="card-top">
+            <h3>
+              <a href="https://oakwood-commons.org/sln-agentic-code/">sln-agentic-code</a>
+              <span class="badge badge-docs">Docs</span>
+            </h3>
+            <p>Official scafctl solution, Blueprint walkthrough, repo contracts, and portable Go CI for disciplined agentic coding</p>
+          </div>
+          <div class="links">
+            <a href="https://oakwood-commons.org/sln-agentic-code/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/sln-agentic-code">GitHub</a>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="repo-group" data-group-section="providers">
+      <div class="group-header">
+        <div>
+          <h3>scafctl Provider Plugins <span class="group-count">15</span></h3>
+          <p>Pluggable data resolvers and action providers for the scafctl ecosystem.</p>
+        </div>
+      </div>
+      <div class="grid compact-grid">
+        
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-cosign in-process oci artifact signing and verification provider powered by cosign/sigstore.  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-cosign"><span class="prefix">scafctl-plugin-</span><span>cosign</span></a>
+              
+            </h3>
+            <p>In-process OCI artifact signing and verification provider powered by Cosign/Sigstore.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-cosign">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-directory scafctl directory provider plugin - filesystem listing, copy, move, mkdir, rmdir operations  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-directory"><span class="prefix">scafctl-plugin-</span><span>directory</span></a>
+              
+            </h3>
+            <p>scafctl directory provider plugin - filesystem listing, copy, move, mkdir, rmdir operations</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-directory">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-env environment variable provider plugin for scafctl  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-env"><span class="prefix">scafctl-plugin-</span><span>env</span></a>
+              
+            </h3>
+            <p>Environment variable provider plugin for scafctl</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-env">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-exec exec provider plugin for scafctl - executes shell commands using an embedded cross-platform posix shell interpreter  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-exec"><span class="prefix">scafctl-plugin-</span><span>exec</span></a>
+              
+            </h3>
+            <p>Exec provider plugin for scafctl - executes shell commands using an embedded cross-platform POSIX shell interpreter</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-exec">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-git scafctl git provider plugin - git version control operations using local git executable  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-git"><span class="prefix">scafctl-plugin-</span><span>git</span></a>
+              
+            </h3>
+            <p>scafctl git provider plugin - Git version control operations using local git executable</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-git">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-github scafctl plugin: github api provider (graphql + rest) github graphql rest-api scafctl scafctl-plugin scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-github"><span class="prefix">scafctl-plugin-</span><span>github</span></a>
+              
+            </h3>
+            <p>scafctl plugin: GitHub API provider (GraphQL + REST)</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-github">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-goscript yaegi-backed go script provider for dynamic in-process script execution in scafctl.  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-goscript"><span class="prefix">scafctl-plugin-</span><span>goscript</span></a>
+              
+            </h3>
+            <p>Yaegi-backed Go script provider for dynamic in-process script execution in scafctl.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-goscript">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-hcl scafctl hcl provider plugin -- parse, format, validate, and generate hcl/terraform configurations  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-hcl"><span class="prefix">scafctl-plugin-</span><span>hcl</span></a>
+              
+            </h3>
+            <p>scafctl HCL provider plugin -- parse, format, validate, and generate HCL/Terraform configurations</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-hcl">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-identity scafctl identity provider plugin - authentication identity, claims, groups, and status  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-identity"><span class="prefix">scafctl-plugin-</span><span>identity</span></a>
+              
+            </h3>
+            <p>scafctl identity provider plugin - authentication identity, claims, groups, and status</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-identity">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-kubeconfig kubeconfig and kubernetes cluster configuration provider for scafctl.  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-kubeconfig"><span class="prefix">scafctl-plugin-</span><span>kubeconfig</span></a>
+              
+            </h3>
+            <p>Kubeconfig and Kubernetes cluster configuration provider for scafctl.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-kubeconfig">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-metadata metadata provider plugin for scafctl - returns runtime metadata about the process and solution  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-metadata"><span class="prefix">scafctl-plugin-</span><span>metadata</span></a>
+              
+            </h3>
+            <p>Metadata provider plugin for scafctl - returns runtime metadata about the process and solution</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-metadata">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-oci daemonless oci image provider — inspect, copy, build, mutate, and publish container artifacts.  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-oci"><span class="prefix">scafctl-plugin-</span><span>oci</span></a>
+              
+            </h3>
+            <p>Daemonless OCI image provider — inspect, copy, build, mutate, and publish container artifacts.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-oci">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-secret retrieves and lists encrypted secrets from the scafctl secrets store via hostservice rpc.  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-secret"><span class="prefix">scafctl-plugin-</span><span>secret</span></a>
+              
+            </h3>
+            <p>Retrieves and lists encrypted secrets from the scafctl secrets store via HostService RPC.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-secret">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-sleep sleep/delay provider plugin for scafctl  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-sleep"><span class="prefix">scafctl-plugin-</span><span>sleep</span></a>
+              
+            </h3>
+            <p>Sleep/delay provider plugin for scafctl</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-sleep">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="providers" data-search="scafctl-plugin-smtp smtp email provider plugin for scafctl with starttls encryption and authentication.  scafctl provider plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-smtp"><span class="prefix">scafctl-plugin-</span><span>smtp</span></a>
+              
+            </h3>
+            <p>SMTP email provider plugin for scafctl with STARTTLS encryption and authentication.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-smtp">GitHub</a>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="repo-group" data-group-section="auth">
+      <div class="group-header">
+        <div>
+          <h3>scafctl Auth Plugins <span class="group-count">4</span></h3>
+          <p>Authentication handlers for cloud platforms, identity providers, and source control.</p>
+        </div>
+      </div>
+      <div class="grid compact-grid">
+        
+        <article class="card repo-card" data-group="auth" data-search="scafctl-plugin-auth-entra scafctl auth handler plugin for microsoft entra id (azure ad)  scafctl auth plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-auth-entra"><span class="prefix">scafctl-plugin-auth-</span><span>entra</span></a>
+              
+            </h3>
+            <p>scafctl auth handler plugin for Microsoft Entra ID (Azure AD)</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-auth-entra">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="auth" data-search="scafctl-plugin-auth-gcp google cloud platform authentication handler plugin for scafctl  scafctl auth plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-auth-gcp"><span class="prefix">scafctl-plugin-auth-</span><span>gcp</span></a>
+              
+            </h3>
+            <p>Google Cloud Platform authentication handler plugin for scafctl</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-auth-gcp">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="auth" data-search="scafctl-plugin-auth-github github authentication handler plugin for scafctl  scafctl auth plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-auth-github"><span class="prefix">scafctl-plugin-auth-</span><span>github</span></a>
+              
+            </h3>
+            <p>GitHub authentication handler plugin for scafctl</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-auth-github">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="auth" data-search="scafctl-plugin-auth-openshift openshift authentication handler for scafctl supporting web oauth and entra id.  scafctl auth plugins">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-auth-openshift"><span class="prefix">scafctl-plugin-auth-</span><span>openshift</span></a>
+              
+            </h3>
+            <p>OpenShift authentication handler for scafctl supporting web OAuth and Entra ID.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-auth-openshift">GitHub</a>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="repo-group" data-group-section="libraries">
+      <div class="group-header">
+        <div>
+          <h3>Go Libraries &amp; SDKs <span class="group-count">6</span></h3>
+          <p>Composable Go packages, plugin SDKs, and infrastructure building blocks.</p>
+        </div>
+      </div>
+      <div class="grid compact-grid">
+        
+        <article class="card repo-card" data-group="libraries" data-search="scafctl-plugin-sdk lightweight sdk for building scafctl plugins (providers and auth handlers) go plugin scafctl sdk go libraries &amp; sdks">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/scafctl-plugin-sdk">scafctl-plugin-sdk</a>
+              
+            </h3>
+            <p>Lightweight SDK for building scafctl plugins (providers and auth handlers)</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-sdk">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="libraries" data-search="celexp a go package for compiling and evaluating common expression language (cel) expressions with optional caching for improved performance.  go libraries &amp; sdks">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/celexp">celexp</a>
+              
+            </h3>
+            <p>A Go package for compiling and evaluating Common Expression Language (CEL) expressions with optional caching for improved performance.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/celexp">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="libraries" data-search="httpc production-ready http client for go with retries, caching, circuit breaker, compression, and observability caching circuit-breaker go http-client httpc retry go libraries &amp; sdks">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/httpc">httpc</a>
+              
+            </h3>
+            <p>Production-ready HTTP client for Go with retries, caching, circuit breaker, compression, and observability</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/httpc">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="libraries" data-search="oauth-helpers shared oauth 2.0 utilities for scafctl auth handler plugins (pkce, browser launch, callback server)  go libraries &amp; sdks">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/oauth-helpers">oauth-helpers</a>
+              
+            </h3>
+            <p>Shared OAuth 2.0 utilities for scafctl auth handler plugins (PKCE, browser launch, callback server)</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/oauth-helpers">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="libraries" data-search="go-flight generic singleflight library for go with leader/follower execution and multi-tier caching.  go libraries &amp; sdks">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/go-flight">go-flight</a>
+              
+            </h3>
+            <p>Generic singleflight library for Go with leader/follower execution and multi-tier caching.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/go-flight">GitHub</a>
+          </div>
+        </article>
+        <article class="card repo-card" data-group="libraries" data-search="caddy-fs-gcs google cloud storage virtual filesystem module for caddy.  go libraries &amp; sdks">
+          <div class="card-top">
+            <h3>
+              <a href="https://github.com/oakwood-commons/caddy-fs-gcs">caddy-fs-gcs</a>
+              
+            </h3>
+            <p>Google Cloud Storage virtual filesystem module for Caddy.</p>
+          </div>
+          <div class="links">
+            <a href="https://github.com/oakwood-commons/caddy-fs-gcs">GitHub</a>
+          </div>
+        </article>
+      </div>
+    </section>
 
-      <article class="card">
-        <div class="card-top">
-          <h3>
-            <a href="https://github.com/oakwood-commons/scafctl-plugin-sdk">scafctl-plugin-sdk</a>
-            <span class="badge">Plugin SDK</span>
-          </h3>
-          <p>Lightweight Go SDK and ecosystem of provider and authentication plugins for extending scafctl.</p>
-        </div>
-        <div class="links">
-          <a href="https://github.com/oakwood-commons/scafctl-plugin-sdk">Plugin SDK &rarr;</a>
-          <a href="https://github.com/orgs/oakwood-commons/repositories?q=scafctl-plugin-">All Plugins</a>
-        </div>
-      </article>
+    <div id="empty-state" class="empty-state">
+      No repositories match your current filter.
     </div>
 
     <footer>
-      <span>&copy; Oakwood Commons &middot; Licensed under Apache-2.0</span>
+      <span>&copy; Oakwood Commons &middot; Licensed under Apache-2.0 &middot; Synced 2026-11-26</span>
       <span><a href="https://github.com/oakwood-commons">github.com/oakwood-commons</a></span>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      const searchInput = document.getElementById('repo-search');
+      const pills = Array.from(document.querySelectorAll('.pill'));
+      const cards = Array.from(document.querySelectorAll('.repo-card'));
+      const sections = Array.from(document.querySelectorAll('.repo-group'));
+      const emptyState = document.getElementById('empty-state');
+      let activeGroup = 'all';
+
+      function applyFilter() {
+        const q = (searchInput.value || '').trim().toLowerCase();
+        let anyVisible = false;
+
+        cards.forEach((card) => {
+          const matchGroup = activeGroup === 'all' || card.dataset.group === activeGroup;
+          const matchQuery = !q || (card.dataset.search || '').includes(q);
+          const show = matchGroup && matchQuery;
+          card.classList.toggle('hidden', !show);
+          if (show) anyVisible = true;
+        });
+
+        sections.forEach((sec) => {
+          const visibleInGroup = sec.querySelectorAll('.repo-card:not(.hidden)').length;
+          sec.classList.toggle('hidden', visibleInGroup === 0);
+        });
+
+        emptyState.style.display = anyVisible ? 'none' : 'block';
+      }
+
+      pills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          activeGroup = pill.dataset.filter || 'all';
+          pills.forEach((p) => p.classList.toggle('active', p === pill));
+          applyFilter();
+        });
+      });
+
+      searchInput.addEventListener('input', applyFilter);
+    })();
+  </script>
 </body>
 </html>

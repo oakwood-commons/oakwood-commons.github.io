@@ -1,0 +1,82 @@
+{
+  "org": "oakwood-commons",
+  "site_url": "https://oakwood-commons.org",
+  "exclude": [
+    ".github",
+    "oakwood-commons.github.io",
+    "mytest",
+    "demo-repository",
+    "scafctl-test-sandbox"
+  ],
+  "featured": [
+    {
+      "name": "scafctl",
+      "badge": "Flagship CLI",
+      "docs_url": "https://scafctl.oakwood-commons.org/",
+      "install": "brew install oakwood-commons/tap/scafctl"
+    },
+    {
+      "name": "kvx",
+      "badge": "Flagship TUI",
+      "docs_url": "https://kvx.oakwood-commons.org/",
+      "install": "brew install oakwood-commons/tap/kvx"
+    },
+    {
+      "name": "sln-agentic-code",
+      "badge": "Solution & Blueprint",
+      "docs_url": "https://oakwood-commons.org/sln-agentic-code/"
+    }
+  ],
+  "groups": [
+    {
+      "id": "cli",
+      "title": "CLIs, TUIs & Apps",
+      "subtitle": "Standalone command-line tools, interactive terminal interfaces, and automation engines.",
+      "repos": ["scafctl", "kvx", "cobra-explorer", "event-reactor", "kvbrowse", "spiral-guard", "homebrew-tap"]
+    },
+    {
+      "id": "solutions",
+      "title": "Solutions & Templates",
+      "subtitle": "Reusable scafctl solutions, blueprints, and project scaffolding templates.",
+      "prefixes": ["sln-", "scafctl-solution-"]
+    },
+    {
+      "id": "providers",
+      "title": "scafctl Provider Plugins",
+      "subtitle": "Pluggable data resolvers and action providers for the scafctl ecosystem.",
+      "strip_prefix": "scafctl-plugin-",
+      "prefixes": ["scafctl-plugin-"],
+      "exclude_prefixes": ["scafctl-plugin-auth-"],
+      "exclude_repos": ["scafctl-plugin-sdk"]
+    },
+    {
+      "id": "auth",
+      "title": "scafctl Auth Plugins",
+      "subtitle": "Authentication handlers for cloud platforms, identity providers, and source control.",
+      "strip_prefix": "scafctl-plugin-auth-",
+      "prefixes": ["scafctl-plugin-auth-"]
+    },
+    {
+      "id": "libraries",
+      "title": "Go Libraries & SDKs",
+      "subtitle": "Composable Go packages, plugin SDKs, and infrastructure building blocks.",
+      "repos": ["scafctl-plugin-sdk", "celexp", "httpc", "oauth-helpers", "go-flight", "caddy-fs-gcs"],
+      "catch_all": true
+    }
+  ],
+  "fallback_descriptions": {
+    "scafctl-plugin-goscript": "Yaegi-backed Go script provider for dynamic in-process script execution in scafctl.",
+    "scafctl-plugin-smtp": "SMTP email provider plugin for scafctl with STARTTLS encryption and authentication.",
+    "scafctl-plugin-secret": "Retrieves and lists encrypted secrets from the scafctl secrets store via HostService RPC.",
+    "scafctl-plugin-auth-openshift": "OpenShift authentication handler for scafctl supporting web OAuth and Entra ID.",
+    "scafctl-plugin-oci": "Daemonless OCI image provider — inspect, copy, build, mutate, and publish container artifacts.",
+    "scafctl-plugin-kubeconfig": "Kubeconfig and Kubernetes cluster configuration provider for scafctl.",
+    "scafctl-plugin-cosign": "In-process OCI artifact signing and verification provider powered by Cosign/Sigstore.",
+    "scafctl-solution-plugin-template": "Scaffolds a complete scafctl plugin repository with SDK wiring, tests, and release CI.",
+    "event-reactor": "Event-driven automation engine using CEL expressions to match events and dispatch reactions.",
+    "go-flight": "Generic singleflight library for Go with leader/follower execution and multi-tier caching.",
+    "spiral-guard": "Agent workflow guard that detects and interrupts repetitive failure spirals.",
+    "kvbrowse": "Lightweight CLI and interactive terminal browser for exploring nested YAML and JSON files.",
+    "caddy-fs-gcs": "Google Cloud Storage virtual filesystem module for Caddy."
+  }
+}
