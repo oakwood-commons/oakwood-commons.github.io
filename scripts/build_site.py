@@ -736,7 +736,13 @@ def main() -> None:
 
     <footer>
       <span>&copy; Oakwood Commons &middot; Licensed under Apache-2.0 &middot; Synced {built_date}</span>
-      <span><a href="https://github.com/oakwood-commons">github.com/oakwood-commons</a></span>
+      <span>
+        <a href="mailto:hello@oakwood-commons.org">hello@oakwood-commons.org</a>
+        &middot;
+        <a href="/.well-known/security.txt">Security</a>
+        &middot;
+        <a href="https://github.com/oakwood-commons">GitHub</a>
+      </span>
     </footer>
   </div>
 
