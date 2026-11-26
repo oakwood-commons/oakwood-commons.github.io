@@ -62,11 +62,9 @@ def docs_url_for(repo: dict, site_url: str, featured_map: dict[str, dict]) -> st
 
 
 def assign_group(name: str, groups: list[dict]) -> str:
-    # 1. Explicit repo membership first
     for g in groups:
         if name in g.get("repos", []):
             return g["id"]
-    # 2. Prefix rules (respecting exclusions)
     for g in groups:
         if name in g.get("exclude_repos", []):
             continue
@@ -74,7 +72,6 @@ def assign_group(name: str, groups: list[dict]) -> str:
             continue
         if any(name.startswith(p) for p in g.get("prefixes", [])):
             return g["id"]
-    # 3. Catch-all group
     for g in groups:
         if g.get("catch_all"):
             return g["id"]
@@ -88,6 +85,46 @@ def render_display_name(name: str, strip_prefix: str | None) -> str:
         prefix = html.escape(strip_prefix)
         return f'<span class="prefix">{prefix}</span><span>{short}</span>'
     return esc_name
+
+
+def render_install_widget(card_id: str, tabs: list[dict]) -> str:
+    if not tabs:
+        return ""
+    tab_btns: list[str] = []
+    tab_panes: list[str] = []
+    for idx, t in enumerate(tabs):
+        active_cls = " active" if idx == 0 else ""
+        pane_hidden = "" if idx == 0 else " hidden"
+        pane_id = f"install-{card_id}-{idx}"
+        tab_btns.append(
+            f'<button type="button" class="os-tab{active_cls}" data-target="{html.escape(pane_id)}">'
+            f'{html.escape(t["label"])}</button>'
+        )
+        if t.get("cmd"):
+            cmd = t["cmd"]
+            tab_panes.append(
+                f'<div id="{html.escape(pane_id)}" class="os-pane{pane_hidden}">'
+                f'<div class="cmd-row">'
+                f'<code class="install-cmd">{html.escape(cmd)}</code>'
+                f'<button type="button" class="copy-btn" data-copy="{html.escape(cmd)}" aria-label="Copy install command">Copy</button>'
+                f'</div>'
+                f'</div>'
+            )
+        else:
+            note = html.escape(t.get("note", ""))
+            ltxt = html.escape(t.get("link_text", "Releases"))
+            lurl = html.escape(t.get("link_url", "#"))
+            tab_panes.append(
+                f'<div id="{html.escape(pane_id)}" class="os-pane{pane_hidden}">'
+                f'<div class="install-note">{note} <a href="{lurl}">{ltxt}</a></div>'
+                f'</div>'
+            )
+    return (
+        f'<div class="install-box" data-install-box>'
+        f'<div class="os-tabs">{"".join(tab_btns)}</div>'
+        f'{"".join(tab_panes)}'
+        f'</div>'
+    )
 
 
 def main() -> None:
@@ -115,7 +152,6 @@ def main() -> None:
         gid = assign_group(r["name"], groups_cfg)
         grouped[gid].append(r)
 
-    # Sort each group: explicit order if listed in `repos`, else alphabetical
     for g in groups_cfg:
         explicit_order = {name: i for i, name in enumerate(g.get("repos", []))}
         grouped[g["id"]].sort(key=lambda r: (explicit_order.get(r["name"], 999), r["name"]))
@@ -129,13 +165,22 @@ def main() -> None:
         desc = clean_description(r.get("description") or fallbacks.get(r["name"], ""))
         docs_url = docs_url_for(r, site_url, featured_map)
         gh_url = r["html_url"]
+        releases_url = f.get("releases_url", "")
         primary_url = docs_url or gh_url
-        install_html = ""
-        if f.get("install"):
-            install_html = f'<code class="install-cmd">{html.escape(f["install"])}</code>'
+
+        platforms = f.get("platforms", [])
+        platforms_html = ""
+        if platforms:
+            chips = "".join(f'<span class="os-chip">{html.escape(p)}</span>' for p in platforms)
+            platforms_html = f'<div class="os-chips" aria-label="Supported platforms">{chips}</div>'
+
+        install_html = render_install_widget(r["name"], f.get("install_tabs", []))
+
         links = []
         if docs_url:
             links.append(f'<a href="{html.escape(docs_url)}">Documentation &rarr;</a>')
+        if releases_url:
+            links.append(f'<a href="{html.escape(releases_url)}">All Releases</a>')
         links.append(f'<a href="{html.escape(gh_url)}">GitHub</a>')
 
         featured_cards_html.append(f"""
@@ -145,6 +190,7 @@ def main() -> None:
             <a href="{html.escape(primary_url)}">{html.escape(r["name"])}</a>
             <span class="badge">{html.escape(f.get("badge", "Project"))}</span>
           </h3>
+          {platforms_html}
           <p>{html.escape(desc)}</p>
           {install_html}
         </div>
@@ -187,6 +233,8 @@ def main() -> None:
                 badge_html = '<span class="badge badge-docs">Docs</span>'
             else:
                 badge_html = ""
+            if name in featured_map and featured_map[name].get("releases_url"):
+                links.append(f'<a href="{html.escape(featured_map[name]["releases_url"])}">Releases</a>')
             links.append(f'<a href="{html.escape(gh_url)}">GitHub</a>')
 
             cards.append(f"""
@@ -224,7 +272,7 @@ def main() -> None:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oakwood Commons — Open-Source Developer Tools</title>
-  <meta name="description" content="Open-source developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries by Oakwood Commons.">
+  <meta name="description" content="Cross-platform developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows by Oakwood Commons.">
   <link rel="canonical" href="https://oakwood-commons.org/">
   <style>
     :root {{
@@ -239,6 +287,7 @@ def main() -> None:
       --docs-badge-bg: rgba(63, 185, 80, 0.14);
       --docs-badge-fg: #3fb950;
       --code-bg: #090c10;
+      --chip-bg: rgba(139, 148, 158, 0.12);
     }}
     @media (prefers-color-scheme: light) {{
       :root {{
@@ -253,6 +302,7 @@ def main() -> None:
         --docs-badge-bg: rgba(26, 127, 55, 0.1);
         --docs-badge-fg: #1a7f37;
         --code-bg: #eff2f5;
+        --chip-bg: rgba(89, 99, 110, 0.1);
       }}
     }}
     * {{ box-sizing: border-box; }}
@@ -265,7 +315,7 @@ def main() -> None:
       -webkit-font-smoothing: antialiased;
     }}
     .wrap {{
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
       padding: 3rem 1.5rem 4rem;
     }}
@@ -323,7 +373,7 @@ def main() -> None:
     }}
     .hero p {{
       margin: 0;
-      max-width: 700px;
+      max-width: 740px;
       color: var(--muted);
       font-size: 1.08rem;
     }}
@@ -337,7 +387,7 @@ def main() -> None:
     }}
     .grid {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 1rem;
     }}
     .compact-grid {{
@@ -358,7 +408,7 @@ def main() -> None:
       transform: translateY(-1px);
     }}
     .card-top h3 {{
-      margin: 0 0 0.4rem;
+      margin: 0 0 0.45rem;
       font-size: 1.05rem;
       display: flex;
       align-items: center;
@@ -366,7 +416,7 @@ def main() -> None:
       gap: 0.5rem;
     }}
     .featured-card .card-top h3 {{
-      font-size: 1.18rem;
+      font-size: 1.2rem;
     }}
     .card-top h3 a {{
       color: var(--text);
@@ -393,22 +443,102 @@ def main() -> None:
       background: var(--docs-badge-bg);
       color: var(--docs-badge-fg);
     }}
+    .os-chips {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.25rem 0 0.6rem;
+    }}
+    .os-chip {{
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.1rem 0.48rem;
+      border-radius: 6px;
+      background: var(--chip-bg);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }}
     .card p {{
       margin: 0.35rem 0 0.95rem;
       font-size: 0.9rem;
       color: var(--muted);
     }}
-    .install-cmd {{
-      display: block;
-      margin: 0 0 1rem;
-      padding: 0.45rem 0.65rem;
-      border-radius: 6px;
-      background: var(--code-bg);
+    .install-box {{
+      margin: 0 0 1.05rem;
       border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--code-bg);
+      overflow: hidden;
+    }}
+    .os-tabs {{
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }}
+    .os-tab {{
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.4rem 0.7rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }}
+    .os-tab:hover {{
+      color: var(--text);
+    }}
+    .os-tab.active {{
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }}
+    .os-pane {{
+      padding: 0.5rem 0.65rem;
+    }}
+    .cmd-row {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }}
+    .install-cmd {{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.78rem;
+      font-size: 0.77rem;
       color: var(--text);
       overflow-x: auto;
+      white-space: nowrap;
+    }}
+    .copy-btn {{
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 5px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      cursor: pointer;
+    }}
+    .copy-btn:hover {{
+      color: var(--text);
+      border-color: var(--accent);
+    }}
+    .install-note {{
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }}
+    .install-note a {{
+      display: inline-block;
+      margin-top: 0.2rem;
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+    }}
+    .install-note a:hover {{
+      text-decoration: underline;
     }}
     .links {{
       display: flex;
@@ -556,11 +686,11 @@ def main() -> None:
     </header>
 
     <section class="hero">
-      <h2>Developer tools for configuration, scaffolding, and terminal workflows.</h2>
-      <p>Open-source Go CLIs, CEL-powered solutions, pluggable providers, and libraries built for composable engineering workflows.</p>
+      <h2>Cross-platform developer tools for configuration, scaffolding, and terminal workflows.</h2>
+      <p>Open-source Go CLIs, CEL-powered solutions, pluggable providers, and libraries with signed native builds for macOS, Linux, and Windows (<code>x86_64</code> &amp; <code>ARM64</code>).</p>
     </section>
 
-    <div class="section-label">Flagship Projects &amp; Documentation</div>
+    <div class="section-label">Flagship Projects &amp; Multi-OS Install</div>
     <div class="grid">
       {"".join(featured_cards_html)}
     </div>
@@ -625,6 +755,30 @@ def main() -> None:
       }});
 
       searchInput.addEventListener('input', applyFilter);
+
+      document.querySelectorAll('[data-install-box]').forEach((box) => {{
+        const tabs = Array.from(box.querySelectorAll('.os-tab'));
+        const panes = Array.from(box.querySelectorAll('.os-pane'));
+        tabs.forEach((tab) => {{
+          tab.addEventListener('click', () => {{
+            const target = tab.dataset.target;
+            tabs.forEach((t) => t.classList.toggle('active', t === tab));
+            panes.forEach((p) => p.classList.toggle('hidden', p.id !== target));
+          }});
+        }});
+      }});
+
+      document.querySelectorAll('.copy-btn').forEach((btn) => {{
+        btn.addEventListener('click', () => {{
+          const text = btn.dataset.copy || '';
+          if (!navigator.clipboard || !text) return;
+          navigator.clipboard.writeText(text).then(() => {{
+            const prev = btn.textContent;
+            btn.textContent = 'Copied';
+            setTimeout(() => {{ btn.textContent = prev; }}, 1400);
+          }});
+        }});
+      }});
     }})();
   </script>
 </body>

@@ -5,7 +5,7 @@ Organization landing site and repository directory for [Oakwood Commons](https:/
 ## How the Directory Works
 
 - [`catalog.json`](catalog.json) controls:
-  - **`featured`**: Pinned flagship hero cards at the top of `https://oakwood-commons.org/`.
+  - **`featured`**: Pinned flagship hero cards at the top of `https://oakwood-commons.org/`, supported OS/arch chips, and multi-OS install tabs (`macOS / Linux`, `Windows (winget)`, binaries, `go install`).
   - **`groups`**: Category sections and prefix rules (`CLIs, TUIs & Apps`, `Solutions & Templates`, `scafctl Provider Plugins`, `scafctl Auth Plugins`, `Go Libraries & SDKs`).
   - **`exclude`**: Sandbox/internal repositories hidden from the public directory.
   - **`fallback_descriptions`**: Summary copy used only when a repository's GitHub `About` description is empty.
@@ -17,6 +17,10 @@ To preview locally:
 python3 scripts/build_site.py
 python3 -m http.server -d site 8080
 ```
+
+## Maintainer Guides
+
+- **[Publishing Oakwood Commons CLIs to `winget`](docs/winget-publishing.md)** — Reusable setup and CI automation playbook (two-token GitHub App + PAT split, `.goreleaser.yaml` config, and `task winget-pr` fallback) modeled on `OakwoodCommons.kvx`.
 
 ## Custom Domain & URL Routing (`oakwood-commons.org`)
 

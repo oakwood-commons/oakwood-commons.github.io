@@ -13,25 +13,54 @@
       "name": "scafctl",
       "badge": "Flagship CLI",
       "docs_url": "https://scafctl.oakwood-commons.org/",
-      "install": "brew install oakwood-commons/tap/scafctl"
+      "releases_url": "https://github.com/oakwood-commons/scafctl/releases/latest",
+      "platforms": ["macOS", "Linux", "Windows", "x86_64 & ARM64"],
+      "install_tabs": [
+        {
+          "label": "macOS / Linux",
+          "cmd": "brew install oakwood-commons/tap/scafctl"
+        },
+        {
+          "label": "Windows / Binaries",
+          "note": "Prebuilt signed binaries (.zip / .tar.gz) for Windows, Linux & macOS on GitHub Releases (winget coming soon):",
+          "link_text": "Download Latest Release (Windows · Linux · macOS) →",
+          "link_url": "https://github.com/oakwood-commons/scafctl/releases/latest"
+        }
+      ]
     },
     {
       "name": "kvx",
       "badge": "Flagship TUI",
       "docs_url": "https://kvx.oakwood-commons.org/",
-      "install": "brew install oakwood-commons/tap/kvx"
+      "releases_url": "https://github.com/oakwood-commons/kvx/releases/latest",
+      "platforms": ["macOS", "Linux", "Windows", "x86_64 & ARM64"],
+      "install_tabs": [
+        {
+          "label": "macOS / Linux",
+          "cmd": "brew install oakwood-commons/tap/kvx"
+        },
+        {
+          "label": "Windows (winget)",
+          "cmd": "winget install OakwoodCommons.kvx"
+        },
+        {
+          "label": "Go",
+          "cmd": "go install github.com/oakwood-commons/kvx@latest"
+        }
+      ]
     },
     {
       "name": "sln-agentic-code",
       "badge": "Solution & Blueprint",
-      "docs_url": "https://oakwood-commons.org/sln-agentic-code/"
+      "docs_url": "https://oakwood-commons.org/sln-agentic-code/",
+      "platforms": ["Cross-Platform Workflow"]
     }
   ],
   "groups": [
     {
       "id": "cli",
       "title": "CLIs, TUIs & Apps",
-      "subtitle": "Standalone command-line tools, interactive terminal interfaces, and automation engines.",
+      "subtitle": "Cross-platform command-line tools, interactive terminal interfaces, and automation engines for macOS, Linux, and Windows.",
       "repos": ["scafctl", "kvx", "cobra-explorer", "event-reactor", "kvbrowse", "spiral-guard", "homebrew-tap"]
     },
     {

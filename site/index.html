@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oakwood Commons — Open-Source Developer Tools</title>
-  <meta name="description" content="Open-source developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries by Oakwood Commons.">
+  <meta name="description" content="Cross-platform developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows by Oakwood Commons.">
   <link rel="canonical" href="https://oakwood-commons.org/">
   <style>
     :root {
@@ -19,6 +19,7 @@
       --docs-badge-bg: rgba(63, 185, 80, 0.14);
       --docs-badge-fg: #3fb950;
       --code-bg: #090c10;
+      --chip-bg: rgba(139, 148, 158, 0.12);
     }
     @media (prefers-color-scheme: light) {
       :root {
@@ -33,6 +34,7 @@
         --docs-badge-bg: rgba(26, 127, 55, 0.1);
         --docs-badge-fg: #1a7f37;
         --code-bg: #eff2f5;
+        --chip-bg: rgba(89, 99, 110, 0.1);
       }
     }
     * { box-sizing: border-box; }
@@ -45,7 +47,7 @@
       -webkit-font-smoothing: antialiased;
     }
     .wrap {
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
       padding: 3rem 1.5rem 4rem;
     }
@@ -103,7 +105,7 @@
     }
     .hero p {
       margin: 0;
-      max-width: 700px;
+      max-width: 740px;
       color: var(--muted);
       font-size: 1.08rem;
     }
@@ -117,7 +119,7 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 1rem;
     }
     .compact-grid {
@@ -138,7 +140,7 @@
       transform: translateY(-1px);
     }
     .card-top h3 {
-      margin: 0 0 0.4rem;
+      margin: 0 0 0.45rem;
       font-size: 1.05rem;
       display: flex;
       align-items: center;
@@ -146,7 +148,7 @@
       gap: 0.5rem;
     }
     .featured-card .card-top h3 {
-      font-size: 1.18rem;
+      font-size: 1.2rem;
     }
     .card-top h3 a {
       color: var(--text);
@@ -173,22 +175,102 @@
       background: var(--docs-badge-bg);
       color: var(--docs-badge-fg);
     }
+    .os-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.25rem 0 0.6rem;
+    }
+    .os-chip {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.1rem 0.48rem;
+      border-radius: 6px;
+      background: var(--chip-bg);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
     .card p {
       margin: 0.35rem 0 0.95rem;
       font-size: 0.9rem;
       color: var(--muted);
     }
-    .install-cmd {
-      display: block;
-      margin: 0 0 1rem;
-      padding: 0.45rem 0.65rem;
-      border-radius: 6px;
-      background: var(--code-bg);
+    .install-box {
+      margin: 0 0 1.05rem;
       border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--code-bg);
+      overflow: hidden;
+    }
+    .os-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .os-tab {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.4rem 0.7rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .os-tab:hover {
+      color: var(--text);
+    }
+    .os-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .os-pane {
+      padding: 0.5rem 0.65rem;
+    }
+    .cmd-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .install-cmd {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.78rem;
+      font-size: 0.77rem;
       color: var(--text);
       overflow-x: auto;
+      white-space: nowrap;
+    }
+    .copy-btn {
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 5px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .copy-btn:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+    .install-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .install-note a {
+      display: inline-block;
+      margin-top: 0.2rem;
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .install-note a:hover {
+      text-decoration: underline;
     }
     .links {
       display: flex;
@@ -336,11 +418,11 @@
     </header>
 
     <section class="hero">
-      <h2>Developer tools for configuration, scaffolding, and terminal workflows.</h2>
-      <p>Open-source Go CLIs, CEL-powered solutions, pluggable providers, and libraries built for composable engineering workflows.</p>
+      <h2>Cross-platform developer tools for configuration, scaffolding, and terminal workflows.</h2>
+      <p>Open-source Go CLIs, CEL-powered solutions, pluggable providers, and libraries with signed native builds for macOS, Linux, and Windows (<code>x86_64</code> &amp; <code>ARM64</code>).</p>
     </section>
 
-    <div class="section-label">Flagship Projects &amp; Documentation</div>
+    <div class="section-label">Flagship Projects &amp; Multi-OS Install</div>
     <div class="grid">
       
       <article class="card featured-card">
@@ -349,11 +431,12 @@
             <a href="https://scafctl.oakwood-commons.org/">scafctl</a>
             <span class="badge">Flagship CLI</span>
           </h3>
+          <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">macOS</span><span class="os-chip">Linux</span><span class="os-chip">Windows</span><span class="os-chip">x86_64 &amp; ARM64</span></div>
           <p>A configuration discovery and scaffolding tool using CEL for dynamic evaluation</p>
-          <code class="install-cmd">brew install oakwood-commons/tap/scafctl</code>
+          <div class="install-box" data-install-box><div class="os-tabs"><button type="button" class="os-tab active" data-target="install-scafctl-0">macOS / Linux</button><button type="button" class="os-tab" data-target="install-scafctl-1">Windows / Binaries</button></div><div id="install-scafctl-0" class="os-pane"><div class="cmd-row"><code class="install-cmd">brew install oakwood-commons/tap/scafctl</code><button type="button" class="copy-btn" data-copy="brew install oakwood-commons/tap/scafctl" aria-label="Copy install command">Copy</button></div></div><div id="install-scafctl-1" class="os-pane hidden"><div class="install-note">Prebuilt signed binaries (.zip / .tar.gz) for Windows, Linux &amp; macOS on GitHub Releases (winget coming soon): <a href="https://github.com/oakwood-commons/scafctl/releases/latest">Download Latest Release (Windows · Linux · macOS) →</a></div></div></div>
         </div>
         <div class="links">
-          <a href="https://scafctl.oakwood-commons.org/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
+          <a href="https://scafctl.oakwood-commons.org/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/scafctl/releases/latest">All Releases</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
         </div>
       </article>
       <article class="card featured-card">
@@ -362,11 +445,12 @@
             <a href="https://kvx.oakwood-commons.org/">kvx</a>
             <span class="badge">Flagship TUI</span>
           </h3>
+          <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">macOS</span><span class="os-chip">Linux</span><span class="os-chip">Windows</span><span class="os-chip">x86_64 &amp; ARM64</span></div>
           <p>A terminal-based UI for exploring structured data interactively</p>
-          <code class="install-cmd">brew install oakwood-commons/tap/kvx</code>
+          <div class="install-box" data-install-box><div class="os-tabs"><button type="button" class="os-tab active" data-target="install-kvx-0">macOS / Linux</button><button type="button" class="os-tab" data-target="install-kvx-1">Windows (winget)</button><button type="button" class="os-tab" data-target="install-kvx-2">Go</button></div><div id="install-kvx-0" class="os-pane"><div class="cmd-row"><code class="install-cmd">brew install oakwood-commons/tap/kvx</code><button type="button" class="copy-btn" data-copy="brew install oakwood-commons/tap/kvx" aria-label="Copy install command">Copy</button></div></div><div id="install-kvx-1" class="os-pane hidden"><div class="cmd-row"><code class="install-cmd">winget install OakwoodCommons.kvx</code><button type="button" class="copy-btn" data-copy="winget install OakwoodCommons.kvx" aria-label="Copy install command">Copy</button></div></div><div id="install-kvx-2" class="os-pane hidden"><div class="cmd-row"><code class="install-cmd">go install github.com/oakwood-commons/kvx@latest</code><button type="button" class="copy-btn" data-copy="go install github.com/oakwood-commons/kvx@latest" aria-label="Copy install command">Copy</button></div></div></div>
         </div>
         <div class="links">
-          <a href="https://kvx.oakwood-commons.org/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
+          <a href="https://kvx.oakwood-commons.org/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/kvx/releases/latest">All Releases</a> <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
         </div>
       </article>
       <article class="card featured-card">
@@ -375,6 +459,7 @@
             <a href="https://oakwood-commons.org/sln-agentic-code/">sln-agentic-code</a>
             <span class="badge">Solution &amp; Blueprint</span>
           </h3>
+          <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">Cross-Platform Workflow</span></div>
           <p>Official scafctl solution, Blueprint walkthrough, repo contracts, and portable Go CI for disciplined agentic coding</p>
           
         </div>
@@ -399,7 +484,7 @@
       <div class="group-header">
         <div>
           <h3>CLIs, TUIs &amp; Apps <span class="group-count">6</span></h3>
-          <p>Standalone command-line tools, interactive terminal interfaces, and automation engines.</p>
+          <p>Cross-platform command-line tools, interactive terminal interfaces, and automation engines for macOS, Linux, and Windows.</p>
         </div>
       </div>
       <div class="grid compact-grid">
@@ -413,7 +498,7 @@
             <p>A configuration discovery and scaffolding tool using CEL for dynamic evaluation</p>
           </div>
           <div class="links">
-            <a href="https://scafctl.oakwood-commons.org/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
+            <a href="https://scafctl.oakwood-commons.org/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/scafctl/releases/latest">Releases</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
           </div>
         </article>
         <article class="card repo-card" data-group="cli" data-search="kvx a terminal-based ui for exploring structured data interactively cel cli csv data-viewer go json ndjson terminal toml tui yaml clis, tuis &amp; apps">
@@ -425,7 +510,7 @@
             <p>A terminal-based UI for exploring structured data interactively</p>
           </div>
           <div class="links">
-            <a href="https://kvx.oakwood-commons.org/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
+            <a href="https://kvx.oakwood-commons.org/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/kvx/releases/latest">Releases</a> <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
           </div>
         </article>
         <article class="card repo-card" data-group="cli" data-search="cobra-explorer an interactive tui for any cobra-based cli application. browse the full command tree, inspect flags and documentation, build commands visually, and execute them — all without memorizing help output.  clis, tuis &amp; apps">
@@ -895,6 +980,30 @@
       });
 
       searchInput.addEventListener('input', applyFilter);
+
+      document.querySelectorAll('[data-install-box]').forEach((box) => {
+        const tabs = Array.from(box.querySelectorAll('.os-tab'));
+        const panes = Array.from(box.querySelectorAll('.os-pane'));
+        tabs.forEach((tab) => {
+          tab.addEventListener('click', () => {
+            const target = tab.dataset.target;
+            tabs.forEach((t) => t.classList.toggle('active', t === tab));
+            panes.forEach((p) => p.classList.toggle('hidden', p.id !== target));
+          });
+        });
+      });
+
+      document.querySelectorAll('.copy-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const text = btn.dataset.copy || '';
+          if (!navigator.clipboard || !text) return;
+          navigator.clipboard.writeText(text).then(() => {
+            const prev = btn.textContent;
+            btn.textContent = 'Copied';
+            setTimeout(() => { btn.textContent = prev; }, 1400);
+          });
+        });
+      });
     })();
   </script>
 </body>
