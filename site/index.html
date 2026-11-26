@@ -458,17 +458,19 @@
     <div class="section-label">Flagship Projects &amp; Multi-OS Install</div>
     <div class="grid">
       
-      <article class="card featured-card">
+      <article class="card featured-card" data-release-repo="oakwood-commons/scafctl" data-release-tag="v0.47.0">
         <div class="card-top">
           <h3>
             <a href="https://scafctl.oakwood-commons.org/">scafctl</a>
-            <span class="badge">Flagship CLI · v0.47.0</span>
+            <span class="badge" data-badge-base="Flagship CLI">Flagship CLI · v0.47.0</span>
           </h3>
           <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">macOS</span><span class="os-chip">Linux</span><span class="os-chip">Windows</span><span class="os-chip">x86_64 &amp; ARM64</span></div>
           <p>A configuration discovery and scaffolding tool using CEL for dynamic evaluation</p>
           <div class="install-box" data-install-box><div class="os-tabs"><div class="os-tab-list"><button type="button" class="os-tab active" data-target="install-scafctl-0">macOS</button><button type="button" class="os-tab" data-target="install-scafctl-1">Linux</button><button type="button" class="os-tab" data-target="install-scafctl-2">Windows</button></div><button type="button" class="copy-btn" aria-label="Copy install command" title="Copy command"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/></svg></button></div><div id="install-scafctl-0" class="os-pane" data-cmd="brew install oakwood-commons/tap/scafctl"><pre class="install-cmd"><code>brew install oakwood-commons/tap/scafctl</code></pre><div class="subnote">Or download Apple Silicon / Intel binaries from <a href="https://github.com/oakwood-commons/scafctl/releases/latest">GitHub Releases</a>.</div></div><div id="install-scafctl-1" class="os-pane hidden" data-cmd="curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Linux_x86_64.tar.gz \
+  | sudo tar -xz -C /usr/local/bin scafctl" data-cmd-template="curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/{tag}/scafctl_{version}_Linux_x86_64.tar.gz \
   | sudo tar -xz -C /usr/local/bin scafctl"><pre class="install-cmd"><code>curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Linux_x86_64.tar.gz \
   | sudo tar -xz -C /usr/local/bin scafctl</code></pre><div class="subnote">Also via Homebrew (<code>brew install oakwood-commons/tap/scafctl</code>) or <code>Linux_arm64</code> on <a href="https://github.com/oakwood-commons/scafctl/releases/latest">Releases</a>.</div></div><div id="install-scafctl-2" class="os-pane hidden" data-cmd="Invoke-WebRequest -Uri &quot;https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Windows_x86_64.zip&quot; -OutFile scafctl.zip
+Expand-Archive -Force scafctl.zip -DestinationPath ." data-cmd-template="Invoke-WebRequest -Uri &quot;https://github.com/oakwood-commons/scafctl/releases/download/{tag}/scafctl_{version}_Windows_x86_64.zip&quot; -OutFile scafctl.zip
 Expand-Archive -Force scafctl.zip -DestinationPath ."><pre class="install-cmd"><code>Invoke-WebRequest -Uri &quot;https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Windows_x86_64.zip&quot; -OutFile scafctl.zip
 Expand-Archive -Force scafctl.zip -DestinationPath .</code></pre><div class="subnote">Run in PowerShell. <code>Windows_arm64.zip</code> also on <a href="https://github.com/oakwood-commons/scafctl/releases/latest">GitHub Releases</a>.</div></div></div>
         </div>
@@ -476,15 +478,16 @@ Expand-Archive -Force scafctl.zip -DestinationPath .</code></pre><div class="sub
           <a href="https://scafctl.oakwood-commons.org/">Docs &rarr;</a> <a href="https://scafctl.oakwood-commons.org/#quick-install">Install Guide</a> <a href="https://github.com/oakwood-commons/scafctl/releases/latest">Releases</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
         </div>
       </article>
-      <article class="card featured-card">
+      <article class="card featured-card" data-release-repo="oakwood-commons/kvx" data-release-tag="v0.18.0">
         <div class="card-top">
           <h3>
             <a href="https://kvx.oakwood-commons.org/">kvx</a>
-            <span class="badge">Flagship TUI · v0.18.0</span>
+            <span class="badge" data-badge-base="Flagship TUI">Flagship TUI · v0.18.0</span>
           </h3>
           <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">macOS</span><span class="os-chip">Linux</span><span class="os-chip">Windows</span><span class="os-chip">x86_64 &amp; ARM64</span></div>
           <p>A terminal-based UI for exploring structured data interactively</p>
           <div class="install-box" data-install-box><div class="os-tabs"><div class="os-tab-list"><button type="button" class="os-tab active" data-target="install-kvx-0">macOS</button><button type="button" class="os-tab" data-target="install-kvx-1">Linux</button><button type="button" class="os-tab" data-target="install-kvx-2">Windows</button></div><button type="button" class="copy-btn" aria-label="Copy install command" title="Copy command"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/></svg></button></div><div id="install-kvx-0" class="os-pane" data-cmd="brew install oakwood-commons/tap/kvx"><pre class="install-cmd"><code>brew install oakwood-commons/tap/kvx</code></pre><div class="subnote">Or download signed binaries from <a href="https://github.com/oakwood-commons/kvx/releases/latest">GitHub Releases</a>.</div></div><div id="install-kvx-1" class="os-pane hidden" data-cmd="curl -fsSL https://github.com/oakwood-commons/kvx/releases/download/v0.18.0/kvx_0.18.0_Linux_x86_64.tar.gz \
+  | sudo tar -xz -C /usr/local/bin kvx" data-cmd-template="curl -fsSL https://github.com/oakwood-commons/kvx/releases/download/{tag}/kvx_{version}_Linux_x86_64.tar.gz \
   | sudo tar -xz -C /usr/local/bin kvx"><pre class="install-cmd"><code>curl -fsSL https://github.com/oakwood-commons/kvx/releases/download/v0.18.0/kvx_0.18.0_Linux_x86_64.tar.gz \
   | sudo tar -xz -C /usr/local/bin kvx</code></pre><div class="subnote">Also via Homebrew (<code>brew install oakwood-commons/tap/kvx</code>) or <code>Linux_arm64</code> on <a href="https://github.com/oakwood-commons/kvx/releases/latest">Releases</a>.</div></div><div id="install-kvx-2" class="os-pane hidden" data-cmd="winget install OakwoodCommons.kvx"><pre class="install-cmd"><code>winget install OakwoodCommons.kvx</code></pre><div class="subnote">Standalone <code>.zip</code> binaries (<code>x86_64</code> &amp; <code>arm64</code>) also on <a href="https://github.com/oakwood-commons/kvx/releases/latest">GitHub Releases</a>.</div></div></div>
         </div>
@@ -496,7 +499,7 @@ Expand-Archive -Force scafctl.zip -DestinationPath .</code></pre><div class="sub
         <div class="card-top">
           <h3>
             <a href="https://oakwood-commons.org/sln-agentic-code/">sln-agentic-code</a>
-            <span class="badge">Solution &amp; Blueprint</span>
+            <span class="badge" data-badge-base="Solution &amp; Blueprint">Solution &amp; Blueprint</span>
           </h3>
           <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">Cross-Platform Workflow</span></div>
           <p>Official scafctl solution, Blueprint walkthrough, repo contracts, and portable Go CI for disciplined agentic coding</p>
@@ -1057,6 +1060,40 @@ Expand-Archive -Force scafctl.zip -DestinationPath .</code></pre><div class="sub
             });
           });
         }
+      });
+
+      function applyReleaseTag(card, tag) {
+        if (!tag || !/^v?\d+\.\d+\.\d+/.test(tag) || tag === card.dataset.releaseTag) return;
+        card.dataset.releaseTag = tag;
+        const version = tag.replace(/^v/, '');
+        const badge = card.querySelector('[data-badge-base]');
+        if (badge) badge.textContent = badge.dataset.badgeBase + ' · ' + tag;
+        card.querySelectorAll('[data-cmd-template]').forEach((pane) => {
+          const next = pane.dataset.cmdTemplate.replaceAll('{tag}', tag).replaceAll('{version}', version);
+          pane.dataset.cmd = next;
+          const code = pane.querySelector('code');
+          if (code) code.textContent = next;
+        });
+      }
+
+      document.querySelectorAll('[data-release-repo]').forEach((card) => {
+        const repo = card.dataset.releaseRepo;
+        const cacheKey = 'oc-latest:' + repo;
+        try {
+          const cached = sessionStorage.getItem(cacheKey);
+          if (cached) { applyReleaseTag(card, cached); return; }
+        } catch (_) {}
+        fetch('https://api.github.com/repos/' + repo + '/releases/latest', {
+          headers: { Accept: 'application/vnd.github+json' }
+        })
+          .then((r) => (r.ok ? r.json() : null))
+          .then((d) => {
+            const tag = d && typeof d.tag_name === 'string' ? d.tag_name.trim() : '';
+            if (!tag) return;
+            try { sessionStorage.setItem(cacheKey, tag); } catch (_) {}
+            applyReleaseTag(card, tag);
+          })
+          .catch(() => {});
       });
     })();
   </script>

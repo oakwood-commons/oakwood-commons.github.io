@@ -124,14 +124,20 @@ def render_install_widget(card_id: str, tabs: list[dict], latest_tag: str) -> st
             f'<button type="button" class="os-tab{active_cls}" data-target="{html.escape(pane_id)}">'
             f'{html.escape(t["label"])}</button>'
         )
-        cmd = t.get("cmd", "")
+        raw_cmd = t.get("cmd", "")
+        cmd = raw_cmd
         if latest_tag:
-            cmd = cmd.replace("{tag}", latest_tag).replace("{version}", version)
+            cmd = raw_cmd.replace("{tag}", latest_tag).replace("{version}", version)
+        tpl_attr = (
+            f' data-cmd-template="{html.escape(raw_cmd)}"'
+            if ("{tag}" in raw_cmd or "{version}" in raw_cmd)
+            else ""
+        )
         subnote = t.get("subnote_html", "")
         subnote_block = f'<div class="subnote">{subnote}</div>' if subnote else ""
         if cmd:
             tab_panes.append(
-                f'<div id="{html.escape(pane_id)}" class="os-pane{pane_hidden}" data-cmd="{html.escape(cmd)}">'
+                f'<div id="{html.escape(pane_id)}" class="os-pane{pane_hidden}" data-cmd="{html.escape(cmd)}"{tpl_attr}>'
                 f'<pre class="install-cmd"><code>{html.escape(cmd)}</code></pre>'
                 f'{subnote_block}'
                 f'</div>'
@@ -190,7 +196,13 @@ def main() -> None:
         primary_url = docs_url or gh_url
 
         latest_tag = fetch_latest_tag(org, r["name"]) if f.get("install_tabs") else ""
-        badge_label = f"{f.get('badge', 'Project')} · {latest_tag}" if latest_tag else f.get("badge", "Project")
+        base_badge = f.get("badge", "Project")
+        badge_label = f"{base_badge} · {latest_tag}" if latest_tag else base_badge
+        release_attrs = (
+            f' data-release-repo="{html.escape(org)}/{html.escape(r["name"])}" data-release-tag="{html.escape(latest_tag)}"'
+            if f.get("install_tabs")
+            else ""
+        )
 
         platforms = f.get("platforms", [])
         platforms_html = ""
@@ -210,11 +222,11 @@ def main() -> None:
         links.append(f'<a href="{html.escape(gh_url)}">GitHub</a>')
 
         featured_cards_html.append(f"""
-      <article class="card featured-card">
+      <article class="card featured-card"{release_attrs}>
         <div class="card-top">
           <h3>
             <a href="{html.escape(primary_url)}">{html.escape(r["name"])}</a>
-            <span class="badge">{html.escape(badge_label)}</span>
+            <span class="badge" data-badge-base="{html.escape(base_badge)}">{html.escape(badge_label)}</span>
           </h3>
           {platforms_html}
           <p>{html.escape(desc)}</p>
@@ -852,6 +864,40 @@ def main() -> None:
             }});
           }});
         }}
+      }});
+
+      function applyReleaseTag(card, tag) {{
+        if (!tag || !/^v?\\d+\\.\\d+\\.\\d+/.test(tag) || tag === card.dataset.releaseTag) return;
+        card.dataset.releaseTag = tag;
+        const version = tag.replace(/^v/, '');
+        const badge = card.querySelector('[data-badge-base]');
+        if (badge) badge.textContent = badge.dataset.badgeBase + ' · ' + tag;
+        card.querySelectorAll('[data-cmd-template]').forEach((pane) => {{
+          const next = pane.dataset.cmdTemplate.replaceAll('{{tag}}', tag).replaceAll('{{version}}', version);
+          pane.dataset.cmd = next;
+          const code = pane.querySelector('code');
+          if (code) code.textContent = next;
+        }});
+      }}
+
+      document.querySelectorAll('[data-release-repo]').forEach((card) => {{
+        const repo = card.dataset.releaseRepo;
+        const cacheKey = 'oc-latest:' + repo;
+        try {{
+          const cached = sessionStorage.getItem(cacheKey);
+          if (cached) {{ applyReleaseTag(card, cached); return; }}
+        }} catch (_) {{}}
+        fetch('https://api.github.com/repos/' + repo + '/releases/latest', {{
+          headers: {{ Accept: 'application/vnd.github+json' }}
+        }})
+          .then((r) => (r.ok ? r.json() : null))
+          .then((d) => {{
+            const tag = d && typeof d.tag_name === 'string' ? d.tag_name.trim() : '';
+            if (!tag) return;
+            try {{ sessionStorage.setItem(cacheKey, tag); }} catch (_) {{}}
+            applyReleaseTag(card, tag);
+          }})
+          .catch(() => {{}});
       }});
     }})();
   </script>
