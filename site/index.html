@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oakwood Commons — Open-Source Developer Tools</title>
+  <meta name="description" content="Open-source developer tools focused on configuration management, scaffolding, terminal workflows, and automation.">
+  <link rel="canonical" href="https://oakwood-commons.org/">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-hover: #1c232d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-subtle: rgba(56, 139, 253, 0.14);
+      --tag-bg: #21262d;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6f8fa;
+        --surface: #ffffff;
+        --surface-hover: #f3f6f9;
+        --border: #d0d7de;
+        --text: #1f2328;
+        --muted: #59636e;
+        --accent: #0969da;
+        --accent-subtle: rgba(9, 105, 218, 0.1);
+        --tag-bg: #eaeef2;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3.5rem 1.5rem 4rem;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    .brand img {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .gh-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.95rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .gh-btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+    }
+    .hero {
+      padding: 2.75rem 0 2rem;
+    }
+    .hero h2 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+      line-height: 1.25;
+      letter-spacing: -0.025em;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+    .section-label {
+      margin: 2rem 0 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.35rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .card-top h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .card-top h3 a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .card-top h3 a:hover {
+      color: var(--accent);
+    }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .card p {
+      margin: 0.4rem 0 1.1rem;
+      font-size: 0.94rem;
+      color: var(--muted);
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    .links a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      margin-top: 3.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    footer a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img src="https://avatars.githubusercontent.com/u/248898899?s=96&v=4" alt="Oakwood Commons logo">
+        <h1>Oakwood Commons</h1>
+      </div>
+      <a class="gh-btn" href="https://github.com/oakwood-commons">
+        GitHub Organization &rarr;
+      </a>
+    </header>
+
+    <section class="hero">
+      <h2>Developer tools for configuration, scaffolding, and terminal workflows.</h2>
+      <p>Open-source Go CLIs, libraries, and reusable automation templates built for composable, reproducible engineering workflows.</p>
+    </section>
+
+    <div class="section-label">Documentation &amp; Flagship Projects</div>
+    <div class="grid">
+      <article class="card">
+        <div class="card-top">
+          <h3>
+            <a href="https://scafctl.oakwood-commons.org/">scafctl</a>
+            <span class="badge">CLI &amp; Docs</span>
+          </h3>
+          <p>Configuration discovery and scaffolding tool powered by CEL for dynamic evaluation, pluggable providers, and OCI catalog distribution.</p>
+        </div>
+        <div class="links">
+          <a href="https://scafctl.oakwood-commons.org/">Documentation &rarr;</a>
+          <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>
+            <a href="https://kvx.oakwood-commons.org/">kvx</a>
+            <span class="badge">TUI &amp; Docs</span>
+          </h3>
+          <p>Interactive terminal UI for exploring, querying, and navigating structured configuration and data files.</p>
+        </div>
+        <div class="links">
+          <a href="https://kvx.oakwood-commons.org/">Documentation &rarr;</a>
+          <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>
+            <a href="https://oakwood-commons.org/sln-agentic-code/">sln-agentic-code</a>
+            <span class="badge">Solution &amp; Guide</span>
+          </h3>
+          <p>Official scafctl solution, blueprint walkthrough, repository contracts, and portable Go CI for disciplined agentic coding.</p>
+        </div>
+        <div class="links">
+          <a href="https://oakwood-commons.org/sln-agentic-code/">Documentation &rarr;</a>
+          <a href="https://github.com/oakwood-commons/sln-agentic-code">GitHub</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="section-label">Libraries &amp; Companion Tools</div>
+    <div class="grid">
+      <article class="card">
+        <div class="card-top">
+          <h3>
+            <a href="https://github.com/oakwood-commons/cobra-explorer">cobra-explorer</a>
+            <span class="badge">Go TUI</span>
+          </h3>
+          <p>Interactive terminal UI for any Cobra-based CLI — browse command trees, inspect flags, and build commands visually.</p>
+        </div>
+        <div class="links">
+          <a href="https://github.com/oakwood-commons/cobra-explorer">GitHub &rarr;</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>
+            <a href="https://github.com/oakwood-commons/celexp">celexp</a>
+            <span class="badge">Go Library</span>
+          </h3>
+          <p>Go package for compiling and evaluating Common Expression Language (CEL) expressions with optional caching.</p>
+        </div>
+        <div class="links">
+          <a href="https://github.com/oakwood-commons/celexp">GitHub &rarr;</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <h3>
+            <a href="https://github.com/oakwood-commons/scafctl-plugin-sdk">scafctl-plugin-sdk</a>
+            <span class="badge">Plugin SDK</span>
+          </h3>
+          <p>Lightweight Go SDK and ecosystem of provider and authentication plugins for extending scafctl.</p>
+        </div>
+        <div class="links">
+          <a href="https://github.com/oakwood-commons/scafctl-plugin-sdk">Plugin SDK &rarr;</a>
+          <a href="https://github.com/orgs/oakwood-commons/repositories?q=scafctl-plugin-">All Plugins</a>
+        </div>
+      </article>
+    </div>
+
+    <footer>
+      <span>&copy; Oakwood Commons &middot; Licensed under Apache-2.0</span>
+      <span><a href="https://github.com/oakwood-commons">github.com/oakwood-commons</a></span>
+    </footer>
+  </div>
+</body>
+</html>
