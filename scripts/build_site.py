@@ -7,6 +7,7 @@ import html
 import json
 import os
 import re
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,6 +15,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG_PATH = ROOT / "catalog.json"
 OUT_PATH = ROOT / "site" / "index.html"
+
+
+def api_headers() -> dict[str, str]:
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "oakwood-commons-site-builder",
+    }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    return headers
 
 
 def clean_description(text: str) -> str:
@@ -27,14 +39,7 @@ def clean_description(text: str) -> str:
 def fetch_repos(org: str) -> list[dict]:
     repos: list[dict] = []
     page = 1
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
-    headers = {
-        "Accept": "application/vnd.github+json",
-        "User-Agent": "oakwood-commons-site-builder",
-    }
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
-
+    headers = api_headers()
     while True:
         url = f"https://api.github.com/orgs/{org}/repos?type=public&per_page=100&page={page}"
         req = urllib.request.Request(url, headers=headers)
@@ -47,6 +52,17 @@ def fetch_repos(org: str) -> list[dict]:
             break
         page += 1
     return repos
+
+
+def fetch_latest_tag(org: str, repo: str) -> str:
+    url = f"https://api.github.com/repos/{org}/{repo}/releases/latest"
+    req = urllib.request.Request(url, headers=api_headers())
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            return (data.get("tag_name") or "").strip()
+    except urllib.error.HTTPError:
+        return ""
 
 
 def docs_url_for(repo: dict, site_url: str, featured_map: dict[str, dict]) -> str:
@@ -87,9 +103,10 @@ def render_display_name(name: str, strip_prefix: str | None) -> str:
     return esc_name
 
 
-def render_install_widget(card_id: str, tabs: list[dict]) -> str:
+def render_install_widget(card_id: str, tabs: list[dict], latest_tag: str) -> str:
     if not tabs:
         return ""
+    version = latest_tag.lstrip("v")
     tab_btns: list[str] = []
     tab_panes: list[str] = []
     for idx, t in enumerate(tabs):
@@ -100,23 +117,19 @@ def render_install_widget(card_id: str, tabs: list[dict]) -> str:
             f'<button type="button" class="os-tab{active_cls}" data-target="{html.escape(pane_id)}">'
             f'{html.escape(t["label"])}</button>'
         )
-        if t.get("cmd"):
-            cmd = t["cmd"]
+        cmd = t.get("cmd", "")
+        if latest_tag:
+            cmd = cmd.replace("{tag}", latest_tag).replace("{version}", version)
+        subnote = t.get("subnote_html", "")
+        subnote_block = f'<div class="subnote">{subnote}</div>' if subnote else ""
+        if cmd:
             tab_panes.append(
                 f'<div id="{html.escape(pane_id)}" class="os-pane{pane_hidden}">'
                 f'<div class="cmd-row">'
                 f'<code class="install-cmd">{html.escape(cmd)}</code>'
                 f'<button type="button" class="copy-btn" data-copy="{html.escape(cmd)}" aria-label="Copy install command">Copy</button>'
                 f'</div>'
-                f'</div>'
-            )
-        else:
-            note = html.escape(t.get("note", ""))
-            ltxt = html.escape(t.get("link_text", "Releases"))
-            lurl = html.escape(t.get("link_url", "#"))
-            tab_panes.append(
-                f'<div id="{html.escape(pane_id)}" class="os-pane{pane_hidden}">'
-                f'<div class="install-note">{note} <a href="{lurl}">{ltxt}</a></div>'
+                f'{subnote_block}'
                 f'</div>'
             )
     return (
@@ -164,9 +177,13 @@ def main() -> None:
             continue
         desc = clean_description(r.get("description") or fallbacks.get(r["name"], ""))
         docs_url = docs_url_for(r, site_url, featured_map)
+        install_guide_url = f.get("install_guide_url", "")
         gh_url = r["html_url"]
         releases_url = f.get("releases_url", "")
         primary_url = docs_url or gh_url
+
+        latest_tag = fetch_latest_tag(org, r["name"]) if f.get("install_tabs") else ""
+        badge_label = f"{f.get('badge', 'Project')} · {latest_tag}" if latest_tag else f.get("badge", "Project")
 
         platforms = f.get("platforms", [])
         platforms_html = ""
@@ -174,13 +191,15 @@ def main() -> None:
             chips = "".join(f'<span class="os-chip">{html.escape(p)}</span>' for p in platforms)
             platforms_html = f'<div class="os-chips" aria-label="Supported platforms">{chips}</div>'
 
-        install_html = render_install_widget(r["name"], f.get("install_tabs", []))
+        install_html = render_install_widget(r["name"], f.get("install_tabs", []), latest_tag)
 
         links = []
         if docs_url:
-            links.append(f'<a href="{html.escape(docs_url)}">Documentation &rarr;</a>')
+            links.append(f'<a href="{html.escape(docs_url)}">Docs &rarr;</a>')
+        if install_guide_url:
+            links.append(f'<a href="{html.escape(install_guide_url)}">Install Guide</a>')
         if releases_url:
-            links.append(f'<a href="{html.escape(releases_url)}">All Releases</a>')
+            links.append(f'<a href="{html.escape(releases_url)}">Releases</a>')
         links.append(f'<a href="{html.escape(gh_url)}">GitHub</a>')
 
         featured_cards_html.append(f"""
@@ -188,7 +207,7 @@ def main() -> None:
         <div class="card-top">
           <h3>
             <a href="{html.escape(primary_url)}">{html.escape(r["name"])}</a>
-            <span class="badge">{html.escape(f.get("badge", "Project"))}</span>
+            <span class="badge">{html.escape(badge_label)}</span>
           </h3>
           {platforms_html}
           <p>{html.escape(desc)}</p>
@@ -387,7 +406,7 @@ def main() -> None:
     }}
     .grid {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
       gap: 1rem;
     }}
     .compact-grid {{
@@ -495,7 +514,7 @@ def main() -> None:
       border-bottom-color: var(--accent);
     }}
     .os-pane {{
-      padding: 0.5rem 0.65rem;
+      padding: 0.55rem 0.65rem;
     }}
     .cmd-row {{
       display: flex;
@@ -505,10 +524,11 @@ def main() -> None:
     }}
     .install-cmd {{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.77rem;
+      font-size: 0.76rem;
       color: var(--text);
       overflow-x: auto;
       white-space: nowrap;
+      padding-bottom: 2px;
     }}
     .copy-btn {{
       flex-shrink: 0;
@@ -525,20 +545,23 @@ def main() -> None:
       color: var(--text);
       border-color: var(--accent);
     }}
-    .install-note {{
-      font-size: 0.78rem;
+    .subnote {{
+      margin-top: 0.4rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.74rem;
       color: var(--muted);
-      line-height: 1.45;
+      line-height: 1.4;
     }}
-    .install-note a {{
-      display: inline-block;
-      margin-top: 0.2rem;
+    .subnote a {{
       color: var(--accent);
-      font-weight: 500;
       text-decoration: none;
     }}
-    .install-note a:hover {{
+    .subnote a:hover {{
       text-decoration: underline;
+    }}
+    .subnote code {{
+      font-size: 0.72rem;
     }}
     .links {{
       display: flex;

@@ -119,7 +119,7 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
       gap: 1rem;
     }
     .compact-grid {
@@ -227,7 +227,7 @@
       border-bottom-color: var(--accent);
     }
     .os-pane {
-      padding: 0.5rem 0.65rem;
+      padding: 0.55rem 0.65rem;
     }
     .cmd-row {
       display: flex;
@@ -237,10 +237,11 @@
     }
     .install-cmd {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.77rem;
+      font-size: 0.76rem;
       color: var(--text);
       overflow-x: auto;
       white-space: nowrap;
+      padding-bottom: 2px;
     }
     .copy-btn {
       flex-shrink: 0;
@@ -257,20 +258,23 @@
       color: var(--text);
       border-color: var(--accent);
     }
-    .install-note {
-      font-size: 0.78rem;
+    .subnote {
+      margin-top: 0.4rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.74rem;
       color: var(--muted);
-      line-height: 1.45;
+      line-height: 1.4;
     }
-    .install-note a {
-      display: inline-block;
-      margin-top: 0.2rem;
+    .subnote a {
       color: var(--accent);
-      font-weight: 500;
       text-decoration: none;
     }
-    .install-note a:hover {
+    .subnote a:hover {
       text-decoration: underline;
+    }
+    .subnote code {
+      font-size: 0.72rem;
     }
     .links {
       display: flex;
@@ -429,28 +433,28 @@
         <div class="card-top">
           <h3>
             <a href="https://scafctl.oakwood-commons.org/">scafctl</a>
-            <span class="badge">Flagship CLI</span>
+            <span class="badge">Flagship CLI · v0.47.0</span>
           </h3>
           <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">macOS</span><span class="os-chip">Linux</span><span class="os-chip">Windows</span><span class="os-chip">x86_64 &amp; ARM64</span></div>
           <p>A configuration discovery and scaffolding tool using CEL for dynamic evaluation</p>
-          <div class="install-box" data-install-box><div class="os-tabs"><button type="button" class="os-tab active" data-target="install-scafctl-0">macOS / Linux</button><button type="button" class="os-tab" data-target="install-scafctl-1">Windows / Binaries</button></div><div id="install-scafctl-0" class="os-pane"><div class="cmd-row"><code class="install-cmd">brew install oakwood-commons/tap/scafctl</code><button type="button" class="copy-btn" data-copy="brew install oakwood-commons/tap/scafctl" aria-label="Copy install command">Copy</button></div></div><div id="install-scafctl-1" class="os-pane hidden"><div class="install-note">Prebuilt signed binaries (.zip / .tar.gz) for Windows, Linux &amp; macOS on GitHub Releases (winget coming soon): <a href="https://github.com/oakwood-commons/scafctl/releases/latest">Download Latest Release (Windows · Linux · macOS) →</a></div></div></div>
+          <div class="install-box" data-install-box><div class="os-tabs"><button type="button" class="os-tab active" data-target="install-scafctl-0">macOS</button><button type="button" class="os-tab" data-target="install-scafctl-1">Linux</button><button type="button" class="os-tab" data-target="install-scafctl-2">Windows (PowerShell)</button></div><div id="install-scafctl-0" class="os-pane"><div class="cmd-row"><code class="install-cmd">brew install oakwood-commons/tap/scafctl</code><button type="button" class="copy-btn" data-copy="brew install oakwood-commons/tap/scafctl" aria-label="Copy install command">Copy</button></div><div class="subnote">Or download Apple Silicon / Intel binaries from <a href="https://github.com/oakwood-commons/scafctl/releases/latest">GitHub Releases</a>.</div></div><div id="install-scafctl-1" class="os-pane hidden"><div class="cmd-row"><code class="install-cmd">curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Linux_x86_64.tar.gz | sudo tar -xz -C /usr/local/bin scafctl</code><button type="button" class="copy-btn" data-copy="curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Linux_x86_64.tar.gz | sudo tar -xz -C /usr/local/bin scafctl" aria-label="Copy install command">Copy</button></div><div class="subnote">Also via Homebrew (<code>brew install oakwood-commons/tap/scafctl</code>) or <code>Linux_arm64</code> on <a href="https://github.com/oakwood-commons/scafctl/releases/latest">Releases</a>.</div></div><div id="install-scafctl-2" class="os-pane hidden"><div class="cmd-row"><code class="install-cmd">curl.exe -fsSLO https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Windows_x86_64.zip; tar.exe -xf scafctl_0.47.0_Windows_x86_64.zip scafctl.exe</code><button type="button" class="copy-btn" data-copy="curl.exe -fsSLO https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Windows_x86_64.zip; tar.exe -xf scafctl_0.47.0_Windows_x86_64.zip scafctl.exe" aria-label="Copy install command">Copy</button></div><div class="subnote"><code>Windows_arm64.zip</code> also available on <a href="https://github.com/oakwood-commons/scafctl/releases/latest">GitHub Releases</a>.</div></div></div>
         </div>
         <div class="links">
-          <a href="https://scafctl.oakwood-commons.org/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/scafctl/releases/latest">All Releases</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
+          <a href="https://scafctl.oakwood-commons.org/">Docs &rarr;</a> <a href="https://scafctl.oakwood-commons.org/#quick-install">Install Guide</a> <a href="https://github.com/oakwood-commons/scafctl/releases/latest">Releases</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>
         </div>
       </article>
       <article class="card featured-card">
         <div class="card-top">
           <h3>
             <a href="https://kvx.oakwood-commons.org/">kvx</a>
-            <span class="badge">Flagship TUI</span>
+            <span class="badge">Flagship TUI · v0.18.0</span>
           </h3>
           <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">macOS</span><span class="os-chip">Linux</span><span class="os-chip">Windows</span><span class="os-chip">x86_64 &amp; ARM64</span></div>
           <p>A terminal-based UI for exploring structured data interactively</p>
-          <div class="install-box" data-install-box><div class="os-tabs"><button type="button" class="os-tab active" data-target="install-kvx-0">macOS / Linux</button><button type="button" class="os-tab" data-target="install-kvx-1">Windows (winget)</button><button type="button" class="os-tab" data-target="install-kvx-2">Go</button></div><div id="install-kvx-0" class="os-pane"><div class="cmd-row"><code class="install-cmd">brew install oakwood-commons/tap/kvx</code><button type="button" class="copy-btn" data-copy="brew install oakwood-commons/tap/kvx" aria-label="Copy install command">Copy</button></div></div><div id="install-kvx-1" class="os-pane hidden"><div class="cmd-row"><code class="install-cmd">winget install OakwoodCommons.kvx</code><button type="button" class="copy-btn" data-copy="winget install OakwoodCommons.kvx" aria-label="Copy install command">Copy</button></div></div><div id="install-kvx-2" class="os-pane hidden"><div class="cmd-row"><code class="install-cmd">go install github.com/oakwood-commons/kvx@latest</code><button type="button" class="copy-btn" data-copy="go install github.com/oakwood-commons/kvx@latest" aria-label="Copy install command">Copy</button></div></div></div>
+          <div class="install-box" data-install-box><div class="os-tabs"><button type="button" class="os-tab active" data-target="install-kvx-0">macOS</button><button type="button" class="os-tab" data-target="install-kvx-1">Linux</button><button type="button" class="os-tab" data-target="install-kvx-2">Windows (winget)</button></div><div id="install-kvx-0" class="os-pane"><div class="cmd-row"><code class="install-cmd">brew install oakwood-commons/tap/kvx</code><button type="button" class="copy-btn" data-copy="brew install oakwood-commons/tap/kvx" aria-label="Copy install command">Copy</button></div><div class="subnote">Or download signed binaries from <a href="https://github.com/oakwood-commons/kvx/releases/latest">GitHub Releases</a>.</div></div><div id="install-kvx-1" class="os-pane hidden"><div class="cmd-row"><code class="install-cmd">curl -fsSL https://github.com/oakwood-commons/kvx/releases/download/v0.18.0/kvx_0.18.0_Linux_x86_64.tar.gz | sudo tar -xz -C /usr/local/bin kvx</code><button type="button" class="copy-btn" data-copy="curl -fsSL https://github.com/oakwood-commons/kvx/releases/download/v0.18.0/kvx_0.18.0_Linux_x86_64.tar.gz | sudo tar -xz -C /usr/local/bin kvx" aria-label="Copy install command">Copy</button></div><div class="subnote">Also via Homebrew (<code>brew install oakwood-commons/tap/kvx</code>) or <code>Linux_arm64</code> on <a href="https://github.com/oakwood-commons/kvx/releases/latest">Releases</a>.</div></div><div id="install-kvx-2" class="os-pane hidden"><div class="cmd-row"><code class="install-cmd">winget install OakwoodCommons.kvx</code><button type="button" class="copy-btn" data-copy="winget install OakwoodCommons.kvx" aria-label="Copy install command">Copy</button></div><div class="subnote">Standalone <code>.zip</code> binaries (<code>x86_64</code> &amp; <code>arm64</code>) also on <a href="https://github.com/oakwood-commons/kvx/releases/latest">GitHub Releases</a>.</div></div></div>
         </div>
         <div class="links">
-          <a href="https://kvx.oakwood-commons.org/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/kvx/releases/latest">All Releases</a> <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
+          <a href="https://kvx.oakwood-commons.org/">Docs &rarr;</a> <a href="https://kvx.oakwood-commons.org/docs/tutorials/getting-started/#installation">Install Guide</a> <a href="https://github.com/oakwood-commons/kvx/releases/latest">Releases</a> <a href="https://github.com/oakwood-commons/kvx">GitHub</a>
         </div>
       </article>
       <article class="card featured-card">
@@ -464,7 +468,7 @@
           
         </div>
         <div class="links">
-          <a href="https://oakwood-commons.org/sln-agentic-code/">Documentation &rarr;</a> <a href="https://github.com/oakwood-commons/sln-agentic-code">GitHub</a>
+          <a href="https://oakwood-commons.org/sln-agentic-code/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/sln-agentic-code">GitHub</a>
         </div>
       </article>
     </div>

@@ -13,18 +13,24 @@
       "name": "scafctl",
       "badge": "Flagship CLI",
       "docs_url": "https://scafctl.oakwood-commons.org/",
+      "install_guide_url": "https://scafctl.oakwood-commons.org/#quick-install",
       "releases_url": "https://github.com/oakwood-commons/scafctl/releases/latest",
       "platforms": ["macOS", "Linux", "Windows", "x86_64 & ARM64"],
       "install_tabs": [
         {
-          "label": "macOS / Linux",
-          "cmd": "brew install oakwood-commons/tap/scafctl"
+          "label": "macOS",
+          "cmd": "brew install oakwood-commons/tap/scafctl",
+          "subnote_html": "Or download Apple Silicon / Intel binaries from <a href=\"https://github.com/oakwood-commons/scafctl/releases/latest\">GitHub Releases</a>."
         },
         {
-          "label": "Windows / Binaries",
-          "note": "Prebuilt signed binaries (.zip / .tar.gz) for Windows, Linux & macOS on GitHub Releases (winget coming soon):",
-          "link_text": "Download Latest Release (Windows · Linux · macOS) →",
-          "link_url": "https://github.com/oakwood-commons/scafctl/releases/latest"
+          "label": "Linux",
+          "cmd": "curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/{tag}/scafctl_{version}_Linux_x86_64.tar.gz | sudo tar -xz -C /usr/local/bin scafctl",
+          "subnote_html": "Also via Homebrew (<code>brew install oakwood-commons/tap/scafctl</code>) or <code>Linux_arm64</code> on <a href=\"https://github.com/oakwood-commons/scafctl/releases/latest\">Releases</a>."
+        },
+        {
+          "label": "Windows (PowerShell)",
+          "cmd": "curl.exe -fsSLO https://github.com/oakwood-commons/scafctl/releases/download/{tag}/scafctl_{version}_Windows_x86_64.zip; tar.exe -xf scafctl_{version}_Windows_x86_64.zip scafctl.exe",
+          "subnote_html": "<code>Windows_arm64.zip</code> also available on <a href=\"https://github.com/oakwood-commons/scafctl/releases/latest\">GitHub Releases</a>."
         }
       ]
     },
@@ -32,20 +38,24 @@
       "name": "kvx",
       "badge": "Flagship TUI",
       "docs_url": "https://kvx.oakwood-commons.org/",
+      "install_guide_url": "https://kvx.oakwood-commons.org/docs/tutorials/getting-started/#installation",
       "releases_url": "https://github.com/oakwood-commons/kvx/releases/latest",
       "platforms": ["macOS", "Linux", "Windows", "x86_64 & ARM64"],
       "install_tabs": [
         {
-          "label": "macOS / Linux",
-          "cmd": "brew install oakwood-commons/tap/kvx"
+          "label": "macOS",
+          "cmd": "brew install oakwood-commons/tap/kvx",
+          "subnote_html": "Or download signed binaries from <a href=\"https://github.com/oakwood-commons/kvx/releases/latest\">GitHub Releases</a>."
+        },
+        {
+          "label": "Linux",
+          "cmd": "curl -fsSL https://github.com/oakwood-commons/kvx/releases/download/{tag}/kvx_{version}_Linux_x86_64.tar.gz | sudo tar -xz -C /usr/local/bin kvx",
+          "subnote_html": "Also via Homebrew (<code>brew install oakwood-commons/tap/kvx</code>) or <code>Linux_arm64</code> on <a href=\"https://github.com/oakwood-commons/kvx/releases/latest\">Releases</a>."
         },
         {
           "label": "Windows (winget)",
-          "cmd": "winget install OakwoodCommons.kvx"
-        },
-        {
-          "label": "Go",
-          "cmd": "go install github.com/oakwood-commons/kvx@latest"
+          "cmd": "winget install OakwoodCommons.kvx",
+          "subnote_html": "Standalone <code>.zip</code> binaries (<code>x86_64</code> &amp; <code>arm64</code>) also on <a href=\"https://github.com/oakwood-commons/kvx/releases/latest\">GitHub Releases</a>."
         }
       ]
     },
