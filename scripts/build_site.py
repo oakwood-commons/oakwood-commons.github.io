@@ -109,6 +109,13 @@ def render_install_widget(card_id: str, tabs: list[dict], latest_tag: str) -> st
     version = latest_tag.lstrip("v")
     tab_btns: list[str] = []
     tab_panes: list[str] = []
+    copy_svg = (
+        '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" '
+        'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/>'
+        '<path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/>'
+        '</svg>'
+    )
     for idx, t in enumerate(tabs):
         active_cls = " active" if idx == 0 else ""
         pane_hidden = "" if idx == 0 else " hidden"
@@ -124,17 +131,17 @@ def render_install_widget(card_id: str, tabs: list[dict], latest_tag: str) -> st
         subnote_block = f'<div class="subnote">{subnote}</div>' if subnote else ""
         if cmd:
             tab_panes.append(
-                f'<div id="{html.escape(pane_id)}" class="os-pane{pane_hidden}">'
-                f'<div class="cmd-row">'
-                f'<code class="install-cmd">{html.escape(cmd)}</code>'
-                f'<button type="button" class="copy-btn" data-copy="{html.escape(cmd)}" aria-label="Copy install command">Copy</button>'
-                f'</div>'
+                f'<div id="{html.escape(pane_id)}" class="os-pane{pane_hidden}" data-cmd="{html.escape(cmd)}">'
+                f'<pre class="install-cmd"><code>{html.escape(cmd)}</code></pre>'
                 f'{subnote_block}'
                 f'</div>'
             )
     return (
         f'<div class="install-box" data-install-box>'
-        f'<div class="os-tabs">{"".join(tab_btns)}</div>'
+        f'<div class="os-tabs">'
+        f'<div class="os-tab-list">{"".join(tab_btns)}</div>'
+        f'<button type="button" class="copy-btn" aria-label="Copy install command" title="Copy command">{copy_svg}</button>'
+        f'</div>'
         f'{"".join(tab_panes)}'
         f'</div>'
     )
@@ -293,8 +300,12 @@ def main() -> None:
   <title>Oakwood Commons — Open-Source Developer Tools</title>
   <meta name="description" content="Cross-platform developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows by Oakwood Commons.">
   <link rel="canonical" href="https://oakwood-commons.org/">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <style>
     :root {{
+      color-scheme: dark;
       --bg: #0d1117;
       --surface: #161b22;
       --surface-hover: #1c232d;
@@ -310,6 +321,7 @@ def main() -> None:
     }}
     @media (prefers-color-scheme: light) {{
       :root {{
+        color-scheme: light;
         --bg: #f6f8fa;
         --surface: #ffffff;
         --surface-hover: #f3f6f9;
@@ -491,59 +503,83 @@ def main() -> None:
     }}
     .os-tabs {{
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.35rem;
+      padding-right: 0.35rem;
       border-bottom: 1px solid var(--border);
       background: var(--surface);
+    }}
+    .os-tab-list {{
+      display: flex;
+      flex-wrap: wrap;
+      min-width: 0;
     }}
     .os-tab {{
       border: none;
       background: transparent;
       color: var(--muted);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
-      padding: 0.4rem 0.7rem;
+      padding: 0.42rem 0.52rem;
+      white-space: nowrap;
       cursor: pointer;
+      outline: none;
       border-bottom: 2px solid transparent;
       transition: color 0.15s ease, border-color 0.15s ease;
     }}
     .os-tab:hover {{
       color: var(--text);
     }}
+    .os-tab:focus-visible, .copy-btn:focus-visible {{
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+      border-radius: 4px;
+    }}
     .os-tab.active {{
       color: var(--accent);
       border-bottom-color: var(--accent);
     }}
     .os-pane {{
-      padding: 0.55rem 0.65rem;
-    }}
-    .cmd-row {{
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
+      padding: 0.6rem 0.7rem;
     }}
     .install-cmd {{
+      margin: 0;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.76rem;
+      font-size: 0.75rem;
+      line-height: 1.5;
       color: var(--text);
-      overflow-x: auto;
-      white-space: nowrap;
-      padding-bottom: 2px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }}
+    .install-cmd code {{
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
     }}
     .copy-btn {{
       flex-shrink: 0;
-      border: 1px solid var(--border);
-      background: var(--surface);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 24px;
+      border: 1px solid transparent;
+      background: transparent;
       color: var(--muted);
       border-radius: 5px;
-      padding: 0.2rem 0.5rem;
-      font-size: 0.72rem;
-      font-weight: 500;
+      padding: 0;
       cursor: pointer;
+      outline: none;
+      transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
     }}
     .copy-btn:hover {{
       color: var(--text);
-      border-color: var(--accent);
+      background: var(--surface-hover);
+      border-color: var(--border);
+    }}
+    .copy-btn.copied {{
+      color: var(--docs-badge-fg);
     }}
     .subnote {{
       margin-top: 0.4rem;
@@ -785,9 +821,14 @@ def main() -> None:
 
       searchInput.addEventListener('input', applyFilter);
 
+      const checkSvg = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13.5 4.5 6.5 11.5 2.5 7.5"/></svg>';
+
       document.querySelectorAll('[data-install-box]').forEach((box) => {{
         const tabs = Array.from(box.querySelectorAll('.os-tab'));
         const panes = Array.from(box.querySelectorAll('.os-pane'));
+        const copyBtn = box.querySelector('.copy-btn');
+        const defaultIcon = copyBtn ? copyBtn.innerHTML : '';
+
         tabs.forEach((tab) => {{
           tab.addEventListener('click', () => {{
             const target = tab.dataset.target;
@@ -795,18 +836,22 @@ def main() -> None:
             panes.forEach((p) => p.classList.toggle('hidden', p.id !== target));
           }});
         }});
-      }});
 
-      document.querySelectorAll('.copy-btn').forEach((btn) => {{
-        btn.addEventListener('click', () => {{
-          const text = btn.dataset.copy || '';
-          if (!navigator.clipboard || !text) return;
-          navigator.clipboard.writeText(text).then(() => {{
-            const prev = btn.textContent;
-            btn.textContent = 'Copied';
-            setTimeout(() => {{ btn.textContent = prev; }}, 1400);
+        if (copyBtn) {{
+          copyBtn.addEventListener('click', () => {{
+            const activePane = box.querySelector('.os-pane:not(.hidden)');
+            const text = activePane ? (activePane.dataset.cmd || '') : '';
+            if (!navigator.clipboard || !text) return;
+            navigator.clipboard.writeText(text).then(() => {{
+              copyBtn.innerHTML = checkSvg;
+              copyBtn.classList.add('copied');
+              setTimeout(() => {{
+                copyBtn.innerHTML = defaultIcon;
+                copyBtn.classList.remove('copied');
+              }}, 1400);
+            }});
           }});
-        }});
+        }}
       }});
     }})();
   </script>
