@@ -5,10 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oakwood Commons — Open-Source Developer Tools</title>
   <meta name="description" content="Cross-platform developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows by Oakwood Commons.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Oakwood Commons">
+  <meta property="og:title" content="Oakwood Commons — Open-Source Developer Tools">
+  <meta property="og:description" content="Cross-platform developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows by Oakwood Commons.">
+  <meta property="og:url" content="https://oakwood-commons.org/">
+  <meta property="og:image" content="https://oakwood-commons.org/apple-touch-icon.png">
+  <meta name="twitter:card" content="summary">
   <link rel="canonical" href="https://oakwood-commons.org/">
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml">
   <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://oakwood-commons.org/#organization",
+      "name": "Oakwood Commons",
+      "url": "https://oakwood-commons.org/",
+      "logo": "https://oakwood-commons.org/apple-touch-icon.png",
+      "email": "hello@oakwood-commons.org",
+      "description": "Open-source developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows.",
+      "sameAs": [
+        "https://github.com/oakwood-commons",
+        "https://scafctl.oakwood-commons.org/",
+        "https://kvx.oakwood-commons.org/"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://oakwood-commons.org/#website",
+      "url": "https://oakwood-commons.org/",
+      "name": "Oakwood Commons",
+      "publisher": {
+        "@id": "https://oakwood-commons.org/#organization"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "scafctl",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS, Linux, Windows",
+      "url": "https://scafctl.oakwood-commons.org/",
+      "downloadUrl": "https://github.com/oakwood-commons/scafctl/releases/latest",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "author": {
+        "@id": "https://oakwood-commons.org/#organization"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "kvx",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS, Linux, Windows",
+      "url": "https://kvx.oakwood-commons.org/",
+      "downloadUrl": "https://github.com/oakwood-commons/kvx/releases/latest",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "author": {
+        "@id": "https://oakwood-commons.org/#organization"
+      }
+    }
+  ]
+}
+  </script>
   <style>
     :root {
       color-scheme: dark;
@@ -465,7 +528,7 @@
             <span class="badge" data-badge-base="Flagship CLI">Flagship CLI · v0.47.0</span>
           </h3>
           <div class="os-chips" aria-label="Supported platforms"><span class="os-chip">macOS</span><span class="os-chip">Linux</span><span class="os-chip">Windows</span><span class="os-chip">x86_64 &amp; ARM64</span></div>
-          <p>A configuration discovery and scaffolding tool using CEL for dynamic evaluation</p>
+          <p>Declaratively discover data, shape configuration, and run portable workflows for humans and AI agents</p>
           <div class="install-box" data-install-box><div class="os-tabs"><div class="os-tab-list"><button type="button" class="os-tab active" data-target="install-scafctl-0">macOS</button><button type="button" class="os-tab" data-target="install-scafctl-1">Linux</button><button type="button" class="os-tab" data-target="install-scafctl-2">Windows</button></div><button type="button" class="copy-btn" aria-label="Copy install command" title="Copy command"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M3.5 10.5h-1a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/></svg></button></div><div id="install-scafctl-0" class="os-pane" data-cmd="brew install oakwood-commons/tap/scafctl"><pre class="install-cmd"><code>brew install oakwood-commons/tap/scafctl</code></pre><div class="subnote">Or download Apple Silicon / Intel binaries from <a href="https://github.com/oakwood-commons/scafctl/releases/latest">GitHub Releases</a>.</div></div><div id="install-scafctl-1" class="os-pane hidden" data-cmd="curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Linux_x86_64.tar.gz \
   | sudo tar -xz -C /usr/local/bin scafctl" data-cmd-template="curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/{tag}/scafctl_{version}_Linux_x86_64.tar.gz \
   | sudo tar -xz -C /usr/local/bin scafctl"><pre class="install-cmd"><code>curl -fsSL https://github.com/oakwood-commons/scafctl/releases/download/v0.47.0/scafctl_0.47.0_Linux_x86_64.tar.gz \
@@ -531,13 +594,13 @@ Expand-Archive -Force scafctl.zip -DestinationPath .</code></pre><div class="sub
       </div>
       <div class="grid compact-grid">
         
-        <article class="card repo-card" data-group="cli" data-search="scafctl a configuration discovery and scaffolding tool using cel for dynamic evaluation cel cli configuration devtools go oci scaffolding template-engine clis, tuis &amp; apps">
+        <article class="card repo-card" data-group="cli" data-search="scafctl declaratively discover data, shape configuration, and run portable workflows for humans and ai agents ai-agents automation cel cli configuration devtools go mcp oci scaffolding workflow-engine clis, tuis &amp; apps">
           <div class="card-top">
             <h3>
               <a href="https://scafctl.oakwood-commons.org/">scafctl</a>
               <span class="badge badge-docs">Docs</span>
             </h3>
-            <p>A configuration discovery and scaffolding tool using CEL for dynamic evaluation</p>
+            <p>Declaratively discover data, shape configuration, and run portable workflows for humans and AI agents</p>
           </div>
           <div class="links">
             <a href="https://scafctl.oakwood-commons.org/">Docs &rarr;</a> <a href="https://github.com/oakwood-commons/scafctl/releases/latest">Releases</a> <a href="https://github.com/oakwood-commons/scafctl">GitHub</a>

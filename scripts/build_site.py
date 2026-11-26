@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG_PATH = ROOT / "catalog.json"
 OUT_PATH = ROOT / "site" / "index.html"
+SITEMAP_PATH = ROOT / "site" / "sitemap.xml"
 
 
 def api_headers() -> dict[str, str]:
@@ -304,6 +305,56 @@ def main() -> None:
 
     built_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
+    json_ld = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "Organization",
+                    "@id": "https://oakwood-commons.org/#organization",
+                    "name": "Oakwood Commons",
+                    "url": "https://oakwood-commons.org/",
+                    "logo": "https://oakwood-commons.org/apple-touch-icon.png",
+                    "email": "hello@oakwood-commons.org",
+                    "description": "Open-source developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows.",
+                    "sameAs": [
+                        "https://github.com/oakwood-commons",
+                        "https://scafctl.oakwood-commons.org/",
+                        "https://kvx.oakwood-commons.org/",
+                    ],
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": "https://oakwood-commons.org/#website",
+                    "url": "https://oakwood-commons.org/",
+                    "name": "Oakwood Commons",
+                    "publisher": {"@id": "https://oakwood-commons.org/#organization"},
+                },
+                {
+                    "@type": "SoftwareApplication",
+                    "name": "scafctl",
+                    "applicationCategory": "DeveloperApplication",
+                    "operatingSystem": "macOS, Linux, Windows",
+                    "url": "https://scafctl.oakwood-commons.org/",
+                    "downloadUrl": "https://github.com/oakwood-commons/scafctl/releases/latest",
+                    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+                    "author": {"@id": "https://oakwood-commons.org/#organization"},
+                },
+                {
+                    "@type": "SoftwareApplication",
+                    "name": "kvx",
+                    "applicationCategory": "DeveloperApplication",
+                    "operatingSystem": "macOS, Linux, Windows",
+                    "url": "https://kvx.oakwood-commons.org/",
+                    "downloadUrl": "https://github.com/oakwood-commons/kvx/releases/latest",
+                    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+                    "author": {"@id": "https://oakwood-commons.org/#organization"},
+                },
+            ],
+        },
+        indent=2,
+    )
+
     page_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -311,10 +362,22 @@ def main() -> None:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oakwood Commons — Open-Source Developer Tools</title>
   <meta name="description" content="Cross-platform developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows by Oakwood Commons.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Oakwood Commons">
+  <meta property="og:title" content="Oakwood Commons — Open-Source Developer Tools">
+  <meta property="og:description" content="Cross-platform developer tools, scafctl solutions, plugins, terminal interfaces, and Go libraries for macOS, Linux, and Windows by Oakwood Commons.">
+  <meta property="og:url" content="https://oakwood-commons.org/">
+  <meta property="og:image" content="https://oakwood-commons.org/apple-touch-icon.png">
+  <meta name="twitter:card" content="summary">
   <link rel="canonical" href="https://oakwood-commons.org/">
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml">
   <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <script type="application/ld+json">
+{json_ld}
+  </script>
   <style>
     :root {{
       color-scheme: dark;
@@ -906,7 +969,28 @@ def main() -> None:
 """
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(page_html, encoding="utf-8")
-    print(f"Generated {OUT_PATH} ({total_count} repositories across {len(groups_cfg)} groups)")
+
+    sitemap_urls = [f"{site_url.rstrip('/')}/"]
+    for r in sorted(active_repos, key=lambda x: x["name"]):
+        durl = docs_url_for(r, site_url, featured_map)
+        if durl.startswith(f"{site_url.rstrip('/')}/") and durl not in sitemap_urls:
+            sitemap_urls.append(durl)
+
+    sitemap_entries = "\n".join(
+        f"  <url>\n    <loc>{html.escape(u)}</loc>\n    <lastmod>{built_date}</lastmod>\n  </url>"
+        for u in sitemap_urls
+    )
+    sitemap_xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{sitemap_entries}\n"
+        "</urlset>\n"
+    )
+    SITEMAP_PATH.write_text(sitemap_xml, encoding="utf-8")
+    print(
+        f"Generated {OUT_PATH} ({total_count} repositories across {len(groups_cfg)} groups) "
+        f"and {SITEMAP_PATH} ({len(sitemap_urls)} URLs)"
+    )
 
 
 if __name__ == "__main__":
