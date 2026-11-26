@@ -29,8 +29,8 @@
         },
         {
           "label": "Windows",
-          "cmd": "curl.exe -fsSLO https://github.com/oakwood-commons/scafctl/releases/download/{tag}/scafctl_{version}_Windows_x86_64.zip\ntar.exe -xf scafctl_{version}_Windows_x86_64.zip scafctl.exe",
-          "subnote_html": "Run in PowerShell or CMD. <code>Windows_arm64.zip</code> also on <a href=\"https://github.com/oakwood-commons/scafctl/releases/latest\">GitHub Releases</a>."
+          "cmd": "Invoke-WebRequest -Uri \"https://github.com/oakwood-commons/scafctl/releases/download/{tag}/scafctl_{version}_Windows_x86_64.zip\" -OutFile scafctl.zip\nExpand-Archive -Force scafctl.zip -DestinationPath .",
+          "subnote_html": "Run in PowerShell. <code>Windows_arm64.zip</code> also on <a href=\"https://github.com/oakwood-commons/scafctl/releases/latest\">GitHub Releases</a>."
         }
       ]
     },
